@@ -440,7 +440,7 @@
     .family-questions > div { padding: clamp(1rem, 2.6vw, 1.6rem); background: #fff; border: 1px solid var(--line); border-radius: .65rem; }
     .family-questions dt { font-size: 1.125rem; font-weight: 700; line-height: 1.35; }
     .family-questions dd { margin: .5rem 0 0; color: var(--body); font-size: 1.035rem; }
-    .family-questions svg { display: block; width: 2.45rem; height: 2.45rem; margin-bottom: .75rem; padding: .5rem; background: var(--paper); border-radius: .4rem; color: var(--teal); }
+    .family-questions svg { display: block; width: 2.45rem; height: 2.45rem; margin-bottom: .75rem; padding: .45rem; background: var(--paper); border-radius: .4rem; color: var(--teal); }
     .family-questions:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
     .family-controls { display: flex; align-items: center; justify-content: space-between; gap: .65rem; margin-top: .65rem; }
     .family-controls[hidden] { display: none; }
@@ -619,11 +619,6 @@
     }
 
     .enhanced .scroll-track { display: block; height: calc(var(--stride) * 3); }
-    .enhanced .scroll-sequence::after {
-      content: "";
-      display: block;
-      height: var(--stride);
-    }
     .enhanced .desktop-diagram { display: block; }
     .enhanced .stage.is-pinned { touch-action: pan-x pinch-zoom; }
     .enhanced.has-diagrams :is(.mobile-diagram, .mobile-diagram.mobile-income) { display: none; }
@@ -673,18 +668,20 @@
     .controls button[aria-current="step"] { color: #fff; background: var(--teal); }
     .controls button:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
     .sequence-finish {
-      display: inline-grid;
+      display: inline-flex;
       align-items: center;
       min-height: 44px;
       visibility: hidden;
       color: var(--teal);
       font-size: .875rem;
       font-weight: 650;
-      text-underline-offset: .22em;
-      text-decoration-skip-ink: none;
     }
     .controls:has(button:last-of-type[aria-current="step"]) .sequence-finish { visibility: visible; }
-    .sequence-finish:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+    .controls:has(button:last-of-type[aria-current="step"]) .sequence-finish span {
+      animation: scroll-cue 950ms ease-in-out 3;
+    }
+
+    @keyframes scroll-cue { 50% { transform: translateY(3px); } }
 
     .enhanced .desktop-diagram :is(.house, .resident, .ownership-badge) {
       transition: transform 620ms cubic-bezier(.25, .7, .25, 1), opacity 325ms ease;
@@ -787,8 +784,8 @@
     }
 
     @media (max-width: 23rem) {
-      .enhanced .controls { column-gap: .2rem; }
-      .sequence-finish { font-size: .8125rem; }
+      .enhanced .controls { column-gap: .15rem; }
+      .sequence-finish { font-size: .75rem; }
     }
 
     @media (prefers-reduced-motion: no-preference) {
@@ -947,7 +944,7 @@
               <button type="button" aria-label="Schritt 2: Der Verkauf Ihrer Immobilie">2</button>
               <button type="button" aria-label="Schritt 3: Lebenslang zu Hause bleiben">3</button>
               <button type="button" aria-label="Schritt 4: Mehr Spielraum durch eine Sofortrente">4</button>
-              <a class="sequence-finish" href="#auszahlung" aria-label="Weiter zur Auszahlung"><span>Auszahlung&nbsp;<span aria-hidden="true">↓</span></span></a>
+              <span class="sequence-finish">Weiterscrollen&nbsp;<span aria-hidden="true">↓</span></span>
             </div>
           </div>
         </div>
@@ -1040,21 +1037,30 @@
         <dl class="family-questions" id="family-questions" aria-label="Fragen zum Familienverkauf">
           <div>
             <dt>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 5.5a6 6 0 1 0 0 13M5 10h10M5 14h9"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m2.75 10.5 7.5-6.5 6 5.2M5 8.7V19h5.5M12 12h5l4.5 4.5-4.7 4.7-4.8-4.8z"/>
+                <circle cx="14.7" cy="14.7" r=".8" fill="currentColor" stroke="none"/>
+              </svg>
               Was ist ein passender Kaufpreis?
             </dt>
             <dd>Eine Immobilienbewertung gibt Ihnen eine Grundlage für das Gespräch in der Familie. Dabei wird berücksichtigt, wie sich der vorbehaltene Nießbrauch auf den möglichen Kaufpreis auswirkt.</dd>
           </div>
           <div>
             <dt>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8 9-5 9 5H3Zm2 12h14M7 10v7m5-7v7m5-7v7"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 8V6.5l13-3V8m4 4V9a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-3"/>
+                <path d="M16 12h5a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-5a2 2 0 0 1 0-4z"/>
+                <circle cx="16.3" cy="14" r=".55" fill="currentColor" stroke="none"/>
+              </svg>
               Wie lässt sich der Kauf finanzieren?
             </dt>
             <dd>Falls Ihre Angehörigen ein Darlehen brauchen, klären sie mit der Bank, welche Finanzierung mit dem geplanten Nießbrauch infrage kommt.</dd>
           </div>
           <div>
             <dt>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h4m-9 4h6m-6 4h6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5.5 3.5h8l4.5 4.5v12.5H5.5zM13.5 3.5V8H18M8.5 11.5h5m-5 4 2 2 4-4"/>
+              </svg>
               Was gehört in den Kaufvertrag?
             </dt>
             <dd>Besprechen Sie frühzeitig, wer welche laufenden Kosten und Reparaturen übernimmt. Der Notar beurkundet den Verkauf. Das vereinbarte Nutzungsrecht wird im Grundbuch eingetragen.</dd>
@@ -1335,7 +1341,6 @@
     const desktopDiagram = sequence.querySelector('.desktop-diagram');
     const steps = [...sequence.querySelectorAll('.step')];
     const stepButtons = [...sequence.querySelectorAll('.controls button')];
-    const payoutSection = document.querySelector('#auszahlung');
     const motion = matchMedia('(prefers-reduced-motion: no-preference)');
     let current = -1;
     let frame = 0;
@@ -1368,7 +1373,7 @@
       frame = 0;
       const { stride, progress } = getScrollPosition();
       if (!pinned || !stride) return;
-      stage.classList.toggle('is-pinned', progress >= -1 && progress < stride * steps.length - 1);
+      stage.classList.toggle('is-pinned', progress >= -1 && progress < stride * (steps.length - 1) - 1);
       const index = Math.max(0, Math.min(steps.length - 1, Math.floor((progress + 1) / stride)));
       setStep(index);
     }
@@ -1379,10 +1384,6 @@
 
     function goToSequencePosition(position, progress) {
       window.scrollTo({ top: window.scrollY - progress + position, behavior: 'instant' });
-    }
-
-    function goToPayout() {
-      payoutSection.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
 
     function stopWheelAtStep(event) {
@@ -1397,13 +1398,12 @@
       }
       heldWheelDirection = 0;
       const { stride, progress } = getScrollPosition();
-      const last = stride * (steps.length - 1);
-      const end = stride * steps.length;
+      const end = stride * (steps.length - 1);
       const delta = event.deltaY * ([1, 32, innerHeight][event.deltaMode] || 1);
       let stop;
       if (direction > 0 && progress < end - 1) {
         stop = Math.max(0, (Math.floor((progress + 1) / stride) + 1) * stride);
-        if (stop <= last && progress + delta < stop) return;
+        if (progress + delta < stop) return;
       } else if (direction < 0 && progress > 1) {
         stop = progress > end + 1 ? end : (Math.ceil((progress - 1) / stride) - 1) * stride;
         if (progress + delta > stop) return;
@@ -1413,8 +1413,7 @@
       event.preventDefault();
       heldWheelDirection = direction;
       lastWheelAt = now;
-      if (direction > 0 && stop > last) goToPayout();
-      else goToSequencePosition(stop, progress);
+      goToSequencePosition(stop, progress);
     }
 
     function syncLayout() {
@@ -1449,10 +1448,6 @@
       if (Math.abs(distance) < 38 || Math.abs(distance) <= Math.abs(start.clientX - touch.clientX)) return;
       event.preventDefault();
       const target = current + Math.sign(distance);
-      if (target === steps.length) {
-        goToPayout();
-        return;
-      }
       const { stride, progress } = getScrollPosition();
       const destination = target < 0 ? -Math.min(160, Math.abs(distance)) : stride * target;
       goToSequencePosition(destination, progress);
