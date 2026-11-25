@@ -714,7 +714,7 @@
         grid-template-areas: "image" "copy";
         min-height: 0;
         gap: .75rem;
-        padding-block: var(--header-height) 2.5rem;
+        padding-block: var(--header-height) var(--mobile-section-transition);
       }
       .hero-copy { grid-area: copy; width: 100%; }
       .hero-media {
@@ -730,18 +730,41 @@
       }
       .hero h1 { font-size: clamp(2.15rem, 8.1vw, 3.6rem); }
       .hero p { margin-top: .9rem; max-width: 38ch; }
-      .hero-actions { margin-top: 1.15rem; }
+      .hero-actions { margin-top: 1.4rem; }
+
+      .explanation {
+        margin-top: var(--mobile-section-space);
+        margin-bottom: var(--mobile-section-transition);
+      }
+      .payout {
+        padding-block: var(--mobile-section-space);
+        border-top: 1px solid var(--line);
+      }
+      .payout .allocation { margin-top: 1.85rem; row-gap: 1.4rem; }
+      .payout-links { margin-top: 1.45rem; }
+
+      .family-sale .site-shell { padding-block: var(--mobile-section-space); }
+      .family-questions { margin-top: 1.65rem; }
+      .family-controls { margin-top: .9rem; }
+
       .regional {
         grid-template-columns: minmax(0, 1fr);
         grid-template-areas: "intro" "map" "points";
-        gap: 1.2rem;
+        gap: 1.65rem;
+        padding-block: var(--mobile-section-space) var(--mobile-section-transition);
       }
       .regional-copy { display: contents; }
       .regional-intro { grid-area: intro; }
       .regional-map { justify-self: start; width: min(100%, 34rem); padding: .6rem .65rem .8rem; border: 1px solid var(--line); border-radius: .65rem; background: var(--paper); }
       .regional-map .region-map { max-height: 19rem; }
       .regional-points { grid-area: points; margin: 0; }
-      .regional-points > div { border-top: 1px solid var(--line); padding-top: .8rem; }
+      .regional-points > div { border-top: 1px solid var(--line); padding-top: 1rem; }
+      .regional-points div + div { margin-top: 1.3rem; }
+
+      .process { padding-block: var(--mobile-section-space); border-top: 1px solid var(--line); }
+      .process ol { margin-top: 2.45rem; gap: 2.35rem; }
+      .process li + li { border-top: 1px solid var(--line); padding-top: 1.25rem; }
+      .process-proof { margin-top: 3rem; }
     }
 
     @media (max-width: 40rem) {

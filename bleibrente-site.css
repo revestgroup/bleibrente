@@ -111,7 +111,18 @@ html.embedded .site-footer { display: none; }
 }
 
 @media (max-width: 48rem) {
-  .contact-section .site-shell { grid-template-columns: minmax(0, 1fr); }
+  :root {
+    --mobile-section-space: clamp(4.25rem, 12vw, 5.5rem);
+    --mobile-section-transition: clamp(2.75rem, 8vw, 3.75rem);
+  }
+
+  .contact-section .site-shell {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.65rem;
+    padding-block: var(--mobile-section-space);
+  }
+
+  .site-footer .site-shell { gap: 2rem 1.5rem; padding-block: 3rem; }
 }
 
 @media (max-width: 40rem) {

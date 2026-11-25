@@ -235,6 +235,18 @@ a.knowledge-nav:hover { text-decoration: underline; }
   .card-grid.three { grid-template-columns: minmax(0, 1fr); }
 }
 
+@media (max-width: 48rem) {
+  .knowledge-hero .site-shell { padding-block: var(--mobile-section-transition) var(--mobile-section-space); }
+  .knowledge-block { padding-block: var(--mobile-section-space); }
+  .knowledge-block + .knowledge-block:not(.tinted):not(.dark) .site-shell { padding-top: var(--mobile-section-transition); }
+  .knowledge-block:is(.tinted, .dark) + .knowledge-block:not(.tinted):not(.dark) { padding-top: var(--mobile-section-space); }
+  .knowledge-block:is(.tinted, .dark) + .knowledge-block:not(.tinted):not(.dark) .site-shell { padding-top: 0; border-top: 0; }
+
+  .knowledge-block .split { row-gap: 1.85rem; }
+  .card-grid, .comparison { margin-top: 1.85rem; }
+  .card-grid { gap: 1rem; }
+}
+
 @media (max-width: 40rem) {
   .knowledge-header .site-shell { min-height: 3.75rem; }
   .card-grid { grid-template-columns: minmax(0, 1fr); }
