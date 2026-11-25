@@ -86,6 +86,7 @@
 
     @media (max-width: 60rem) {
       :root { --header-height: 3.75rem; }
+      body:has(.mobile-nav[open]) { overflow: hidden; }
       .site-header .desktop-nav { display: none; }
       .mobile-nav { display: block; }
       .mobile-nav summary {
@@ -105,37 +106,59 @@
       .mobile-nav summary svg { width: 1.5rem; height: 1.5rem; }
       .mobile-nav summary .menu-close, .mobile-nav[open] summary .menu-open { display: none; }
       .mobile-nav[open] summary .menu-close { display: block; }
+      .site-header:has(.mobile-nav[open])::after {
+        content: "";
+        position: fixed;
+        inset: var(--header-height) 0 0;
+        z-index: -1;
+        background: #17263629;
+      }
       .mobile-nav .site-nav {
         position: absolute;
-        inset: 100% max(1.5rem, calc((100% - 71rem) / 2)) auto auto;
+        inset: calc(100% + .5rem) 1.5rem auto auto;
+        z-index: 1;
         display: grid;
         align-content: start;
-        width: min(21rem, calc(100% - 2rem));
-        max-height: calc(100dvh - var(--header-height) - .75rem);
+        width: min(23rem, calc(100% - 2rem));
+        max-height: calc(100dvh - var(--header-height) - 1rem);
         overflow-y: auto;
         overscroll-behavior: contain;
-        padding: .45rem;
+        padding: .45rem .9rem;
         border: 1px solid var(--line);
-        border-radius: .6rem;
+        border-radius: .75rem;
         background: #fff;
-        box-shadow: 0 .8rem 1.4rem #17263614;
+        box-shadow: 0 1.1rem 2.75rem #17263624;
+        transform-origin: top right;
       }
       .mobile-nav .site-nav a {
+        justify-content: space-between;
+        gap: .75rem;
         width: 100%;
-        min-height: 48px;
-        padding: .45rem .65rem;
-        border-radius: .35rem;
+        min-height: 54px;
+        padding: .55rem .4rem;
+        color: var(--ink);
+        font-size: 1.0625rem;
+        font-weight: 620;
+      }
+      .mobile-nav .site-nav a + a { border-top: 1px solid var(--line); }
+      .mobile-nav .site-nav a::after {
+        content: "";
+        flex: 0 0 .42rem;
+        height: .42rem;
+        margin-right: .2rem;
+        border: solid var(--teal);
+        border-width: 1.5px 1.5px 0 0;
+        transform: rotate(45deg);
       }
       .mobile-nav .site-nav a:focus-visible { outline-offset: -2px; }
-      .mobile-nav .site-nav a:hover { background: var(--paper); }
-      .mobile-nav .site-nav .menu-calculator {
-        justify-content: space-between;
-        gap: .5rem;
-        margin-top: .25rem;
-        background: var(--paper);
-        color: var(--teal);
-        font-weight: 650;
-      }
+      .mobile-nav .site-nav a:hover { color: var(--teal); }
+    }
+
+    @media (max-width: 60rem) and (prefers-reduced-motion: no-preference) {
+      .mobile-nav[open] .site-nav { animation: menu-in 250ms cubic-bezier(.2, .7, .25, 1) both; }
+      .site-header:has(.mobile-nav[open])::after { animation: backdrop-in 230ms ease both; }
+      @keyframes menu-in { from { opacity: 0; transform: translateY(-.45rem) scale(.985); } }
+      @keyframes backdrop-in { from { opacity: 0; } }
     }
 
     @media (max-width: 40rem) {
@@ -579,7 +602,7 @@
     .enhanced .explanation { scroll-margin-top: var(--header-height); }
     .enhanced .stage-heading { grid-column: 1 / -1; margin-bottom: 0; }
     .enhanced .motion-hint { display: block; margin-bottom: 0; }
-    .enhanced .scroll-sequence { --stride: clamp(15rem, 44vh, 25rem); }
+    .enhanced .scroll-sequence { --stride: clamp(17rem, 48svh, 25rem); }
     .enhanced .stage {
       position: sticky;
       top: var(--header-height);
@@ -602,11 +625,16 @@
       height: var(--stride);
     }
     .enhanced .desktop-diagram { display: block; }
+    .enhanced .stage.is-pinned { touch-action: pan-x pinch-zoom; }
     .enhanced.has-diagrams :is(.mobile-diagram, .mobile-diagram.mobile-income) { display: none; }
     .enhanced .steps { display: grid; align-items: start; }
     .enhanced .step {
       grid-area: 1 / 1;
       visibility: hidden;
+      opacity: 0;
+      transform: translateY(calc(-1 * var(--step-offset, 8px)));
+      transition: opacity 170ms ease, transform 250ms ease, visibility 0s 250ms;
+      pointer-events: none;
       margin: 0;
       padding: 0;
       border: 0;
@@ -614,33 +642,36 @@
 
     .enhanced .step.active {
       visibility: visible;
-      animation: reveal-text 310ms ease-out both;
+      opacity: 1;
+      transform: none;
+      transition: visibility 0s;
+      pointer-events: auto;
+      animation: reveal-text 330ms cubic-bezier(.2, .7, .25, 1) both;
     }
 
     .enhanced .controls {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      column-gap: .65rem;
-      row-gap: .5rem;
-      margin-top: 1.8rem;
+      gap: .3rem;
+      margin-top: 1.3rem;
     }
 
     .controls button {
-      min-height: 44px;
-      padding: .45rem .85rem;
-      border: 1px solid #9aaeb0;
-      border-radius: .35rem;
-      background: #fff;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      border-radius: .4rem;
+      background: var(--paper);
       color: var(--teal);
-      font: inherit;
-      font-size: 1rem;
+      font: 650 .95rem/1 system-ui, sans-serif;
       cursor: pointer;
     }
 
-    .controls button[aria-disabled="true"] { color: #637177; border-color: var(--line); cursor: default; }
+    .controls button:hover { background: #e0efed; }
+    .controls button[aria-current="step"] { color: #fff; background: var(--teal); }
     .controls button:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
-    .counter { color: var(--body); font-size: .95rem; white-space: nowrap; }
 
     .enhanced .desktop-diagram :is(.house, .resident, .ownership-badge) {
       transition: transform 620ms cubic-bezier(.25, .7, .25, 1), opacity 325ms ease;
@@ -654,12 +685,12 @@
     .enhanced .desktop-diagram :is(.facade, .roof, .door, .window) { transition: fill 415ms ease; }
 
     @keyframes reveal-text {
-      from { opacity: 0; transform: translateY(7px); }
+      from { opacity: 0; transform: translateY(var(--step-offset, 8px)); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 52rem) {
-      .enhanced .scroll-sequence { --stride: clamp(9rem, 30svh, 14rem); }
+      .enhanced .scroll-sequence { --stride: clamp(14rem, 43svh, 20rem); }
       .enhanced .stage {
         grid-template-columns: minmax(0, 1fr);
         row-gap: clamp(.45rem, 1.65svh, 1rem);
@@ -803,7 +834,6 @@
           <a href="#auszahlung">Auszahlung</a>
           <a href="#warum-bleibrente">Warum bleibrente?</a>
           <a href="#ablauf">Der Ablauf</a>
-          <a class="menu-calculator" href="immobilienrechner.html" data-open-rechner>Immobilienrechner starten <span aria-hidden="true">→</span></a>
         </nav>
       </details>
     </div>
@@ -830,7 +860,7 @@
         <div class="stage">
           <header class="stage-heading">
             <h2 class="explanation-title" id="explanation-title">Wie kann ich verkaufen und trotzdem hier wohnen bleiben?</h2>
-            <p class="intro motion-hint">Scrollen Sie weiter oder wählen Sie „Weiter“.</p>
+            <p class="intro motion-hint">Scrollen Sie weiter oder wählen Sie einen der vier Schritte.</p>
           </header>
           <div class="desktop-diagram" data-scene="0"></div>
           <div>
@@ -872,9 +902,10 @@
             </div>
 
             <div class="controls" role="group" aria-label="Schritt auswählen">
-              <button type="button" data-back aria-disabled="true">Zurück</button>
-              <button type="button" data-next>Weiter</button>
-              <span class="counter">1 von 4</span>
+              <button type="button" aria-label="Schritt 1: Vermögen im eigenen Zuhause" aria-current="step">1</button>
+              <button type="button" aria-label="Schritt 2: Der Verkauf Ihrer Immobilie">2</button>
+              <button type="button" aria-label="Schritt 3: Lebenslang zu Hause bleiben">3</button>
+              <button type="button" aria-label="Schritt 4: Mehr Spielraum durch eine Sofortrente">4</button>
             </div>
           </div>
         </div>
@@ -1090,7 +1121,7 @@
       <div class="site-shell">
         <div>
           <h2 id="contact-title">Was ist für Sie und Ihre Immobilie möglich?</h2>
-          <p>Erhalten Sie in drei Schritten eine erste Einschätzung, welchen Erlös ein Verkauf mit lebenslangem Nießbrauch ermöglichen könnte.</p>
+          <p>Erhalten Sie in wenigen Schritten eine erste Einschätzung, welchen Erlös ein Verkauf mit lebenslangem Nießbrauch ermöglichen könnte.</p>
         </div>
         <a class="calculator-cta" href="immobilienrechner.html" data-open-rechner>Immobilienrechner starten <span aria-hidden="true">→</span></a>
       </div>
@@ -1258,24 +1289,27 @@
     const track = sequence.querySelector('.scroll-track');
     const desktopDiagram = sequence.querySelector('.desktop-diagram');
     const steps = [...sequence.querySelectorAll('.step')];
-    const counter = sequence.querySelector('.counter');
-    const back = sequence.querySelector('[data-back]');
-    const next = sequence.querySelector('[data-next]');
+    const stepButtons = [...sequence.querySelectorAll('.controls button')];
     const motion = matchMedia('(prefers-reduced-motion: no-preference)');
     let current = -1;
     let frame = 0;
     let pinned = false;
+    let heldWheelDirection = 0;
+    let lastWheelAt = 0;
+    let touchStart = null;
 
     function setStep(index) {
       if (current === index) return;
+      stage.style.setProperty('--step-offset', index < current ? '-8px' : '8px');
       current = index;
       desktopDiagram.dataset.scene = index;
       for (const [stepIndex, step] of steps.entries()) {
-        step.classList.toggle('active', stepIndex === index);
+        const active = stepIndex === index;
+        step.classList.toggle('active', active);
+        step.inert = !active;
+        if (active) stepButtons[stepIndex].setAttribute('aria-current', 'step');
+        else stepButtons[stepIndex].removeAttribute('aria-current');
       }
-      back.setAttribute('aria-disabled', String(index === 0));
-      next.setAttribute('aria-disabled', String(index === steps.length - 1));
-      counter.textContent = (index + 1) + ' von ' + steps.length;
     }
 
     function getScrollPosition() {
@@ -1287,8 +1321,9 @@
     function syncScroll() {
       frame = 0;
       const { stride, progress } = getScrollPosition();
-      if (!stride) return;
-      const index = Math.max(0, Math.min(steps.length - 1, Math.round(progress / stride)));
+      if (!pinned || !stride) return;
+      stage.classList.toggle('is-pinned', progress >= -1 && progress < stride * steps.length - 1);
+      const index = Math.max(0, Math.min(steps.length - 1, Math.floor((progress + 1) / stride)));
       setStep(index);
     }
 
@@ -1296,10 +1331,39 @@
       if (pinned && !frame) frame = requestAnimationFrame(syncScroll);
     }
 
-    function goToStep(index) {
-      if (index < 0 || index >= steps.length) return;
+    function goToSequencePosition(position, progress) {
+      window.scrollTo({ top: window.scrollY - progress + position, behavior: 'instant' });
+    }
+
+    function stopWheelAtStep(event) {
+      if (!pinned || !event.cancelable || event.defaultPrevented || event.ctrlKey || event.metaKey || event.shiftKey ||
+          Math.abs(event.deltaX) >= Math.abs(event.deltaY) || document.querySelector('.calculator-dialog[open], .mobile-nav[open]')) return;
+      const direction = Math.sign(event.deltaY);
+      const now = performance.now();
+      if (heldWheelDirection === direction && now - lastWheelAt < 160) {
+        event.preventDefault();
+        lastWheelAt = now;
+        return;
+      }
+      heldWheelDirection = 0;
       const { stride, progress } = getScrollPosition();
-      window.scrollTo({ top: window.scrollY - progress + stride * index, behavior: 'smooth' });
+      const last = stride * (steps.length - 1);
+      const end = stride * steps.length;
+      const delta = event.deltaY * ([1, 32, innerHeight][event.deltaMode] || 1);
+      let stop;
+      if (direction > 0 && progress < last - 1) {
+        stop = Math.max(0, (Math.floor((progress + 1) / stride) + 1) * stride);
+        if (progress + delta < stop) return;
+      } else if (direction < 0 && progress > 1) {
+        stop = progress > end + 1 ? end : (Math.ceil((progress - 1) / stride) - 1) * stride;
+        if (progress + delta > stop) return;
+      } else {
+        return;
+      }
+      event.preventDefault();
+      heldWheelDirection = direction;
+      lastWheelAt = now;
+      goToSequencePosition(stop, progress);
     }
 
     function syncLayout() {
@@ -1307,13 +1371,42 @@
       pinned = motion.matches && stage.offsetHeight + siteHeader.offsetHeight <= window.innerHeight + 1;
       document.documentElement.classList.toggle('enhanced', pinned);
       if (pinned) syncScroll();
+      else {
+        current = -1;
+        heldWheelDirection = 0;
+        stage.classList.remove('is-pinned');
+        for (const step of steps) step.inert = false;
+      }
     }
 
-    back.addEventListener('click', () => goToStep(current - 1));
-    next.addEventListener('click', () => goToStep(current + 1));
+    for (const [index, button] of stepButtons.entries()) {
+      button.addEventListener('click', () => {
+        const { stride, progress } = getScrollPosition();
+        goToSequencePosition(stride * index, progress);
+      });
+    }
+    stage.addEventListener('touchstart', (event) => {
+      touchStart = stage.classList.contains('is-pinned') && event.touches.length === 1 ? event.touches[0] : null;
+    }, { passive: true });
+    stage.addEventListener('touchcancel', () => { touchStart = null; });
+    stage.addEventListener('touchend', (event) => {
+      const start = touchStart;
+      touchStart = null;
+      if (!start || event.touches.length) return;
+      const touch = event.changedTouches[0];
+      const distance = start.clientY - touch.clientY;
+      if (Math.abs(distance) < 38 || Math.abs(distance) <= Math.abs(start.clientX - touch.clientX)) return;
+      event.preventDefault();
+      const target = current + Math.sign(distance);
+      const { stride, progress } = getScrollPosition();
+      const extra = Math.min(160, Math.abs(distance));
+      const destination = target < 0 ? -extra : stride * target + (target === steps.length ? extra : 0);
+      goToSequencePosition(destination, progress);
+    });
     motion.addEventListener('change', syncLayout);
     window.addEventListener('resize', syncLayout);
     window.addEventListener('scroll', scheduleSync, { passive: true });
+    window.addEventListener('wheel', stopWheelAtStep, { passive: false });
     syncLayout();
   </script>
 </body>

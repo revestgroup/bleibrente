@@ -6,7 +6,6 @@ if (calculatorDialog) {
   const frame = calculatorDialog.querySelector('iframe');
   const hasDeepLink = () => window.location.hash === '#rechner';
   let completed = false;
-  let mobileMenuToggle = null;
 
   function openCalculator() {
     if (calculatorDialog.open) return;
@@ -18,11 +17,6 @@ if (calculatorDialog) {
     link.addEventListener('click', (event) => {
       if (event.button || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
       event.preventDefault();
-      const mobileMenu = link.closest('.mobile-nav');
-      if (mobileMenu) {
-        mobileMenuToggle = mobileMenu.querySelector('summary');
-        mobileMenu.open = false;
-      }
       openCalculator();
     });
   });
@@ -31,8 +25,6 @@ if (calculatorDialog) {
   });
   calculatorDialog.addEventListener('close', () => {
     if (hasDeepLink()) history.replaceState(history.state, '', window.location.pathname + window.location.search);
-    mobileMenuToggle?.focus({ preventScroll: true });
-    mobileMenuToggle = null;
     if (completed) {
       frame.removeAttribute('src');
       calculatorDialog.style.removeProperty('--rechner-height');

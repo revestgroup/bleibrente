@@ -168,3 +168,8 @@ body:has(.calculator-dialog[open]) { overflow: hidden; }
   border: 0;
   background: #fff;
 }
+
+@media (max-width: 40rem) {
+  .calculator-dialog { width: calc(100% - 1rem); max-height: calc(100dvh - 1rem); }
+  .calculator-dialog iframe { max-height: calc(100dvh - 4rem); }
+}

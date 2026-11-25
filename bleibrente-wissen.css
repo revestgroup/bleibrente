@@ -27,9 +27,13 @@ a.knowledge-nav:hover { text-decoration: underline; }
 .knowledge-nav[aria-current] { color: var(--body); }
 
 .knowledge-hero {
-  background: var(--paper);
-  border-block: 1px solid var(--line);
+  background: var(--teal);
+  color: #fff;
 }
+
+.knowledge-hero h1 span { color: #cbe5e1; }
+.knowledge-hero .hero-copy p { color: #e8f3f2; }
+.knowledge-hero .visual { color: var(--ink); }
 
 .knowledge-hero .site-shell {
   display: grid;
@@ -45,16 +49,9 @@ a.knowledge-nav:hover { text-decoration: underline; }
   font-size: clamp(1.075rem, 1.9vw, 1.24rem);
 }
 
-.hero-photo {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border-radius: .9rem;
-}
-
-.overview-hero h1 { font-size: clamp(1.85rem, 4vw, 3.45rem); }
+.overview-hero .site-shell { grid-template-columns: minmax(0, 1fr); min-height: clamp(19rem, 40svh, 28rem); }
+.overview-hero h1 { font-size: clamp(1.85rem, 5vw, 4rem); }
+.overview-hero .hero-copy p { max-width: 54ch; }
 
 .visual {
   min-width: 0;
@@ -235,7 +232,6 @@ a.knowledge-nav:hover { text-decoration: underline; }
 @media (max-width: 53rem) {
   .split, .knowledge-hero .site-shell { grid-template-columns: minmax(0, 1fr); }
   .split .references { grid-column: 1; }
-  .hero-photo { max-height: min(56vw, 25rem); }
   .card-grid.three { grid-template-columns: minmax(0, 1fr); }
 }
 

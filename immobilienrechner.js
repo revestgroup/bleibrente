@@ -174,35 +174,34 @@ const annuityPerson = byId('annuity-person');
 let prices = [0, 0];
 let resultAges = [];
 
+const calculatorSteps = [...document.querySelectorAll('[data-step]')];
+
 function showStep(step) {
-  for (const section of document.querySelectorAll('[data-step]')) {
+  for (const section of calculatorSteps) {
     section.hidden = Number(section.dataset.step) !== step;
     if (!section.hidden) {
-      byId('progress-label').textContent = 'Schritt ' + step + ' von 3';
+      byId('progress-label').textContent = 'Schritt ' + step + ' von ' + calculatorSteps.length;
       section.querySelector('.step-heading').focus({ preventScroll: true });
     }
   }
   document.querySelectorAll('.progress-track span').forEach((part, index) => {
     part.classList.toggle('filled', index < step);
   });
-  window.scrollTo(0, 0);
+  window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
-function syncProperty() {
-  const values = propertyValues();
-  document.querySelector('.property-preview').hidden = !values;
-  if (!values) return;
+function renderPropertyEstimate(values) {
   byId('property-price').textContent = formatRange([values.market, values.market]);
   const source = byId('property-price-source');
   source.hidden = !values.localReference;
   if (values.localReference) {
     source.href = values.localReference.url;
-    source.textContent = 'Ortsdaten: ' + values.localReference.source;
+    source.textContent = values.localReference.source;
   }
   byId('property-price-note').textContent = values.ownMarket
     ? 'Wir rechnen mit Ihrem eingegebenen Marktwert.'
     : values.localReference
-      ? `Modellschätzung für ${values.localReference.place}. Grundlage sind ${euro.format(values.localReference.prices[values.type])} je m² für den gewählten Immobilientyp, gewichtet nach Baujahr.`
+      ? `${values.localReference.place}: ${euro.format(values.localReference.prices[values.type])} je m² als Basis. Das Baujahr fließt in die Schätzung ein.`
       : 'Grobe regionale Näherung anhand des PLZ-Präfixes, der Wohnfläche und des Baujahrs. Für diese PLZ sind keine eigenen Ortsdaten hinterlegt.';
 }
 
@@ -210,7 +209,7 @@ function syncPeople() {
   const isPair = peopleForm.elements.occupants.value === 'pair';
   byId('person-two').hidden = !isPair;
   byId('person-two').disabled = !isPair;
-  byId('first-legend').textContent = isPair ? 'Person 1' : 'Angaben zur Person';
+  byId('first-legend').hidden = !isPair;
 }
 
 function propertyValues(validate = false) {
@@ -261,12 +260,15 @@ function syncSplit() {
   }
 }
 
-propertyForm.addEventListener('input', syncProperty);
-
 propertyForm.addEventListener('submit', (event) => {
   event.preventDefault();
-  if (propertyValues(true)) showStep(2);
-  else focusInvalidProperty();
+  const values = propertyValues(true);
+  if (!values) {
+    focusInvalidProperty();
+    return;
+  }
+  renderPropertyEstimate(values);
+  showStep(2);
 });
 
 peopleForm.addEventListener('change', (event) => {
@@ -324,7 +326,7 @@ peopleForm.addEventListener('submit', (event) => {
   byId('result-assumptions').textContent = marketBasis + ' ' + rentBasis;
   byId('split').hidden = low === 0;
   syncSplit();
-  showStep(3);
+  showStep(4);
 });
 
 for (const [input, errorId] of [[postalInput, 'postal-error'], [areaInput, 'area-error'], [yearInput, 'build-year-error'], [marketInput, 'value-error'], [rentInput, 'rent-error'], [ageInputs[0], 'age-one-error'], [ageInputs[1], 'age-two-error']]) {
@@ -341,7 +343,6 @@ byId('preview-confirmation').addEventListener('click', () => {
   window.location.replace(document.documentElement.classList.contains('embedded') ? 'danke.html?fenster=1' : 'danke.html');
 });
 
-syncProperty();
 syncPeople();
 document.querySelector('.progress-track span').classList.add('filled');
 byId('calculator-content').hidden = false;

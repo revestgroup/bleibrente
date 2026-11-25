@@ -128,6 +128,11 @@
     .estimate { margin-top: 1.15rem; padding: clamp(1rem, 3vw, 1.35rem); border-radius: .6rem; background: var(--mint); }
     .estimate p:first-child { color: var(--teal); font-weight: 650; }
     .amount { display: block; margin-block: .25rem; font-size: clamp(1.65rem, 5vw, 2.45rem); line-height: 1.18; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+    .market-estimate .amount { font-size: clamp(2.15rem, 8vw, 3.15rem); }
+    @media (prefers-reduced-motion: no-preference) {
+      .market-estimate .amount { animation: market-in 400ms cubic-bezier(.2, .7, .25, 1) both; }
+      @keyframes market-in { from { opacity: 0; transform: translateY(.45rem); } }
+    }
     .help + .help { margin-top: .6rem; }
     details { margin-top: 1rem; }
     summary { width: fit-content; min-height: 44px; padding-block: .55rem; color: var(--teal); font-weight: 650; cursor: pointer; }
@@ -139,6 +144,7 @@
     .result-contact { margin-top: 1.65rem; padding-top: 1.35rem; border-top: 1px solid var(--line); }
     .result-contact p { margin: .65rem 0 .5rem; color: var(--body); }
 
+    html.embedded { overscroll-behavior: none; }
     html.embedded body { background: #fff; }
     html.embedded body > header { display: none; }
     html.embedded .calculator { width: 100%; min-height: 0; margin: 0; padding: .75rem clamp(1rem, 4vw, 2.1rem) 1.6rem; box-shadow: none; border-radius: 0; }
@@ -149,13 +155,31 @@
       .calculator { width: 100%; margin: 0; min-height: calc(100vh - 3.75rem); min-height: calc(100svh - 3.75rem); padding: 1.15rem 1rem 2rem; border-radius: 0; }
       .controls .action { flex-basis: 100%; }
       .choice { padding-inline: .55rem; gap: .4rem; }
+      html.embedded .calculator { padding: .35rem .95rem .9rem; }
+      html.embedded .step-heading { margin-top: .5rem; }
+      html.embedded .step-heading svg { display: none; }
+      html.embedded :is(h1,h2) { font-size: clamp(1.55rem, 5.8vw, 1.95rem); }
+      html.embedded .subtitle { margin-top: .4rem; font-size: 1rem; line-height: 1.42; }
+      html.embedded .group { margin-top: .85rem; }
+      html.embedded .choices { margin-top: .4rem; gap: .45rem; }
+      html.embedded .choice { min-height: 48px; padding-block: .45rem; font-size: .97rem; }
+      html.embedded .choice svg { width: 1.1rem; height: 1.1rem; }
+      html.embedded .fields { gap: .55rem; }
+      html.embedded .field > label { margin-bottom: .2rem; font-size: .96rem; }
+      html.embedded .field :is(input,select) { min-height: 44px; padding-block: .4rem; }
+      html.embedded #property-form details { margin-top: .5rem; }
+      html.embedded .controls { margin-top: .75rem; gap: .2rem .9rem; }
+      html.embedded .market-estimate { margin-top: .85rem; padding: .85rem; }
     }
     @media (max-width: 23rem) {
       .fields { grid-template-columns: minmax(0, 1fr); }
-      #property-form > .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #property-form > .fields, #people-form .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #people-form .field select { padding-inline: .5rem 1.35rem; }
+      html.embedded .calculator { padding-bottom: .5rem; }
     }
     @media (max-width: 20rem) {
-      .choices, #property-form > .fields { grid-template-columns: minmax(0, 1fr); }
+      .choice { padding-inline: .4rem; gap: .32rem; }
+      .choice svg { display: none; }
     }
   </style>
   <script src="rechner-fenster.js" defer></script>
@@ -213,15 +237,15 @@
 
     <div id="calculator-content" hidden>
       <div class="progress" id="calculator-progress">
-        <p id="progress-label">Schritt 1 von 3</p>
-        <div class="progress-track" aria-hidden="true"><span></span><span></span><span></span></div>
+        <p id="progress-label">Schritt 1 von 4</p>
+        <div class="progress-track" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
       </div>
 
       <section data-step="1" aria-labelledby="property-title">
         <div class="step-heading" tabindex="-1">
           <svg aria-hidden="true" focusable="false"><use href="#house"/></svg>
-          <h1 id="property-title">Was ist Ihre Immobilie wert?</h1>
-          <p class="subtitle">Aus Ihren Eckdaten schätzen wir den Immobilienwert und den möglichen Kaufpreis mit Nießbrauch.</p>
+          <h1 id="property-title">Ihre Immobilie</h1>
+          <p class="subtitle">Mit diesen Eckdaten schätzen wir den Immobilienwert.</p>
         </div>
 
         <form id="property-form" novalidate>
@@ -249,12 +273,6 @@
               <p class="error" id="build-year-error" hidden></p>
             </div>
           </div>
-          <div class="estimate property-preview" hidden>
-            <p>Geschätzter Immobilienwert ohne Nießbrauch</p>
-            <strong id="property-price" class="amount"></strong>
-            <p id="property-price-note" class="help"></p>
-            <a id="property-price-source" class="help" target="_blank" rel="noopener" hidden></a>
-          </div>
           <details>
             <summary>Eigene Werte übernehmen</summary>
             <p class="help">Falls Ihnen ein eigener Marktwert oder eine vergleichbare Kaltmiete vorliegt, können Sie die Schätzung hier anpassen.</p>
@@ -275,23 +293,41 @@
         </form>
       </section>
 
-      <section data-step="2" aria-labelledby="people-title" hidden>
+      <section data-step="2" aria-labelledby="market-title" hidden>
+        <div class="step-heading" tabindex="-1">
+          <svg aria-hidden="true" focusable="false"><use href="#price"/></svg>
+          <h2 id="market-title">Ihr Immobilienwert</h2>
+        </div>
+        <div class="estimate market-estimate">
+          <p id="property-price-label">Geschätzt ohne Nießbrauch</p>
+          <strong id="property-price" class="amount" aria-describedby="property-price-label"></strong>
+          <p id="property-price-note" class="help"></p>
+          <a id="property-price-source" class="help" target="_blank" rel="noopener" hidden></a>
+        </div>
+        <p class="subtitle">Wie wirkt sich der Nießbrauch auf den möglichen Kaufpreis aus?</p>
+        <div class="controls">
+          <button class="action" type="button" data-go="3">Weiter zum Nießbrauch <span aria-hidden="true">→</span></button>
+          <button class="link-button" type="button" data-go="1">Angaben ändern</button>
+        </div>
+      </section>
+
+      <section data-step="3" aria-labelledby="people-title" hidden>
         <div class="step-heading" tabindex="-1">
           <svg aria-hidden="true" focusable="false"><use href="#people"/></svg>
-          <h2 id="people-title">Wer möchte wohnen bleiben?</h2>
-          <p class="subtitle">Das Alter beeinflusst, wie sich das lebenslange Nutzungsrecht auf den Kaufpreis auswirkt.</p>
+          <h2 id="people-title">Wer bleibt wohnen?</h2>
+          <p class="subtitle">Das Alter beeinflusst den Kaufpreis mit Nießbrauch.</p>
         </div>
         <form id="people-form" novalidate>
           <fieldset class="group">
-            <legend>Für wen soll der Nießbrauch gelten?</legend>
+            <legend>Nießbrauch für</legend>
             <div class="choices">
-              <label class="choice"><input type="radio" name="occupants" value="single" checked><svg aria-hidden="true" focusable="false"><use href="#single-small"/></svg>Für eine Person</label>
-              <label class="choice"><input type="radio" name="occupants" value="pair"><svg aria-hidden="true" focusable="false"><use href="#pair-small"/></svg>Für zwei Personen</label>
+              <label class="choice"><input type="radio" name="occupants" value="single" checked><svg aria-hidden="true" focusable="false"><use href="#single-small"/></svg>Eine Person</label>
+              <label class="choice"><input type="radio" name="occupants" value="pair"><svg aria-hidden="true" focusable="false"><use href="#pair-small"/></svg>Zwei Personen</label>
             </div>
           </fieldset>
 
           <fieldset class="group" id="person-one">
-            <legend id="first-legend">Angaben zur Person</legend>
+            <legend id="first-legend" hidden>Person 1</legend>
             <div class="fields">
               <div class="field">
                 <label for="age-one">Alter in Jahren</label>
@@ -299,7 +335,7 @@
                 <p class="error" id="age-one-error" hidden></p>
               </div>
               <div class="field">
-                <label for="table-one">Geschlecht für die Sterbetafel</label>
+                <label for="table-one">Geschlecht</label>
                 <select id="table-one"><option value="">Keine Angabe</option><option value="female">Weiblich</option><option value="male">Männlich</option></select>
               </div>
             </div>
@@ -313,7 +349,7 @@
                 <p class="error" id="age-two-error" hidden></p>
               </div>
               <div class="field">
-                <label for="table-two">Geschlecht für die Sterbetafel</label>
+                <label for="table-two">Geschlecht</label>
                 <select id="table-two"><option value="">Keine Angabe</option><option value="female">Weiblich</option><option value="male">Männlich</option></select>
               </div>
             </div>
@@ -327,15 +363,15 @@
               <p class="error" id="right-end-error" hidden></p>
             </div>
           </fieldset>
-          <p class="help">Online berechenbar für Personen von 60 bis 100 Jahren. Ohne Geschlechtsangabe berücksichtigt die Schätzung beide veröffentlichten Tabellen.</p>
+          <p class="help">Für Personen von 60 bis 100 Jahren. Ohne Geschlechtsangabe berücksichtigen wir beide Sterbetafeln.</p>
           <div class="controls">
             <button class="action" type="submit">Ergebnis anzeigen <span aria-hidden="true">→</span></button>
-            <button class="link-button" type="button" data-go="1">Zurück zur Immobilie</button>
+            <button class="link-button" type="button" data-go="2">Zurück zum Immobilienwert</button>
           </div>
         </form>
       </section>
 
-      <section data-step="3" aria-labelledby="result-title" hidden>
+      <section data-step="4" aria-labelledby="result-title" hidden>
         <div class="step-heading" tabindex="-1">
           <svg aria-hidden="true" focusable="false"><use href="#price"/></svg>
           <h2 id="result-title">Ihr geschätzter Kaufpreis</h2>
@@ -359,7 +395,7 @@
           <p class="help"><a href="https://genesis.destatis.de/datenbank/online/statistic/12621/table/12621-0001" target="_blank" rel="noopener">Destatis, Periodensterbetafel Deutschland 2023/2025</a> · <a href="https://www.gesetze-im-internet.de/immowertv_2022/__47.html" target="_blank" rel="noopener">§ 47 ImmoWertV</a></p>
         </details>
 
-        <details id="split" open>
+        <details id="split">
           <summary>Verkaufserlös aufteilen</summary>
           <p class="help">Probieren Sie aus, welchen Anteil Sie als Einmalzahlung behalten und welchen Teil Sie für eine Sofortrente einsetzen könnten.</p>
           <div class="group">
@@ -387,7 +423,7 @@
           <p>In dieser Vorschau können Sie die Bestätigung ausprobieren. Es werden keine Kontaktdaten abgefragt oder Anfragen gesendet.</p>
           <div class="controls">
             <button class="action" type="button" id="preview-confirmation">Danke-Seite ansehen <span aria-hidden="true">→</span></button>
-            <button class="link-button" type="button" data-go="2">Angaben ändern</button>
+            <button class="link-button" type="button" data-go="3">Angaben ändern</button>
           </div>
         </div>
       </section>
