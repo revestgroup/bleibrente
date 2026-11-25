@@ -638,8 +638,26 @@
 
     .mobile-sequence {
       --sequence-stride: clamp(18rem, 54svh, 26rem);
+      position: relative;
       scroll-margin-top: var(--header-height);
     }
+
+    html:has(.mobile-sequence) { scroll-snap-type: y proximity; }
+
+    .sequence-stop { display: none; }
+
+    .mobile-sequence .sequence-stop {
+      display: block;
+      position: absolute;
+      inset: calc(var(--sequence-stride) * var(--sequence-index)) 0 auto;
+      height: 1px;
+      scroll-margin-top: var(--header-height);
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      pointer-events: none;
+    }
+
+    .mobile-sequence .sequence-stop.is-released { scroll-snap-align: none; }
 
     .mobile-sequence .sequence-stage {
       position: sticky;
@@ -653,7 +671,9 @@
       background: #fff;
     }
 
-    .mobile-sequence .sequence-stage.is-pinned { touch-action: pan-x pinch-zoom; }
+    .mobile-sequence .sequence-stage.is-pinned:has(.sequence-visual:not([data-scene="0"])) {
+      touch-action: pan-x pinch-zoom;
+    }
     .mobile-sequence .sequence-track { height: calc(var(--sequence-stride) * 3); }
     .mobile-sequence .explanation-title { font-size: clamp(1.45rem, 5.4vw, 2.05rem); }
     .mobile-sequence .explanation-flow { gap: .65rem; margin-top: 0; }
@@ -891,6 +911,10 @@
         </div>
       </div>
       <div class="sequence-track" aria-hidden="true"></div>
+      <span class="sequence-stop" style="--sequence-index: 0" aria-hidden="true"></span>
+      <span class="sequence-stop" style="--sequence-index: 1" aria-hidden="true"></span>
+      <span class="sequence-stop" style="--sequence-index: 2" aria-hidden="true"></span>
+      <span class="sequence-stop" style="--sequence-index: 3" aria-hidden="true"></span>
     </section>
 
     <section class="payout" id="auszahlung" aria-labelledby="payout-title" tabindex="-1">
@@ -1263,6 +1287,7 @@
     const explanation = document.querySelector('.explanation');
     const sequenceStage = explanation.querySelector('.sequence-stage');
     const sequenceTrack = explanation.querySelector('.sequence-track');
+    const sequenceStops = [...explanation.querySelectorAll('.sequence-stop')];
     const sequenceVisual = explanation.querySelector('.sequence-visual');
     const sequenceSteps = [...explanation.querySelectorAll('.step')];
     const sequenceLinks = [...sequenceVisual.querySelectorAll('.step-nav a')];
@@ -1270,6 +1295,7 @@
     const compactSequence = matchMedia('(max-width: 48rem)');
     let mobileSequence = false;
     let sequenceTouch = null;
+    let releasedSequenceStop = null;
     let sequenceFrame = 0;
     let sequenceExit = 0;
 
@@ -1286,14 +1312,25 @@
     }
 
     function mobileSequencePosition() {
-      const stride = sequenceTrack.offsetHeight / (sequenceSteps.length - 1);
+      const stride = sequenceTrack.getBoundingClientRect().height / (sequenceSteps.length - 1);
       const progress = siteHeader.offsetHeight - explanation.getBoundingClientRect().top;
       return { stride, progress };
+    }
+
+    function releaseSequenceStop(index) {
+      if (releasedSequenceStop !== null) sequenceStops[releasedSequenceStop].classList.remove('is-released');
+      releasedSequenceStop = index;
+      if (index !== null) sequenceStops[index].classList.add('is-released');
     }
 
     function syncMobileSequence() {
       const { stride, progress } = mobileSequencePosition();
       const end = stride * (sequenceSteps.length - 1);
+      if (releasedSequenceStop !== null) {
+        const distance = releasedSequenceStop === 0 ? -progress : progress - end;
+        if (distance > stride || distance < -1) releaseSequenceStop(null);
+      }
+
       sequenceStage.classList.toggle('is-pinned', progress >= -1 && progress < end - 1);
       setSequenceStep(Math.max(0, Math.min(sequenceSteps.length - 1, Math.floor((progress + 1) / stride))));
     }
@@ -1330,13 +1367,16 @@
       explanation.classList.toggle('mobile-sequence', compactSequence.matches);
       mobileSequence = compactSequence.matches && sequenceStage.offsetHeight + siteHeader.offsetHeight <= innerHeight + 1;
       explanation.classList.toggle('mobile-sequence', mobileSequence);
-      if (!mobileSequence) sequenceStage.classList.remove('is-pinned');
+      if (!mobileSequence) {
+        sequenceStage.classList.remove('is-pinned');
+        releaseSequenceStop(null);
+      }
       for (const step of sequenceSteps) step.inert = mobileSequence && !step.classList.contains('is-current');
       scheduleSequence();
     }
 
     function positionMobileSequence(position, progress) {
-      window.scrollBy({ top: position - progress, behavior: 'instant' });
+      window.scrollTo({ top: scrollY + position - progress, behavior: 'instant' });
     }
 
     for (const [index, link] of sequenceLinks.entries()) {
@@ -1348,26 +1388,65 @@
       });
     }
 
-    sequenceStage.addEventListener('touchstart', (event) => {
-      sequenceTouch = sequenceStage.classList.contains('is-pinned') && event.touches.length === 1 ? event.touches[0] : null;
+    document.addEventListener('touchstart', (event) => {
+      sequenceTouch = null;
+      if (!mobileSequence || event.touches.length !== 1 ||
+          document.querySelector('.calculator-dialog[open], .mobile-nav[open]')) return;
+      const { stride, progress } = mobileSequencePosition();
+      const last = sequenceSteps.length - 1;
+      const end = stride * last;
+      const entering = progress < -1 || progress > end + 1;
+      const distanceFromSequence = Math.max(-progress, progress - end, 0);
+      if (distanceFromSequence >= innerHeight - siteHeader.offsetHeight) return;
+
+      const touch = event.touches[0];
+      const index = Math.max(0, Math.min(last, Math.floor((progress + 1) / stride)));
+      sequenceTouch = { x: touch.clientX, y: touch.clientY, index, progress, entering, direction: 0 };
     }, { passive: true });
-    sequenceStage.addEventListener('touchcancel', () => { sequenceTouch = null; });
-    sequenceStage.addEventListener('touchend', (event) => {
+
+    document.addEventListener('touchmove', (event) => {
+      if (!sequenceTouch || event.touches.length !== 1) return;
+      const touch = event.touches[0];
+      const distance = sequenceTouch.y - touch.clientY;
+      if (!sequenceTouch.direction) {
+        if (Math.max(Math.abs(distance), Math.abs(sequenceTouch.x - touch.clientX)) < 8) return;
+        const direction = Math.sign(distance);
+        if (Math.abs(distance) <= Math.abs(sequenceTouch.x - touch.clientX)) {
+          sequenceTouch = null;
+          return;
+        }
+        const target = sequenceTouch.index + direction;
+        if (target < 0 || target >= sequenceSteps.length) {
+          if (!sequenceTouch.entering) releaseSequenceStop(sequenceTouch.index);
+          sequenceTouch = null;
+          return;
+        }
+        if (sequenceTouch.entering) releaseSequenceStop(null);
+        sequenceTouch.direction = direction;
+      }
+
+      if (event.cancelable) event.preventDefault();
+      if (sequenceTouch.entering) {
+        const { stride, progress } = mobileSequencePosition();
+        const boundary = stride * sequenceTouch.index;
+        const position = sequenceTouch.progress + distance;
+        positionMobileSequence(sequenceTouch.direction > 0 ? Math.min(boundary, position) : Math.max(boundary, position), progress);
+      }
+    }, { passive: false });
+
+    document.addEventListener('touchcancel', () => { sequenceTouch = null; });
+    document.addEventListener('touchend', (event) => {
       const start = sequenceTouch;
       sequenceTouch = null;
-      if (!start || !mobileSequence || event.touches.length) return;
+      if (!start?.direction || start.entering || !mobileSequence || event.touches.length) return;
 
       const touch = event.changedTouches[0];
-      const distance = start.clientY - touch.clientY;
-      const threshold = Math.min(132, Math.max(96, innerHeight * .16));
-      if (Math.abs(distance) < threshold || Math.abs(distance) <= Math.abs(start.clientX - touch.clientX)) return;
-
-      const target = Number(sequenceVisual.dataset.scene) + Math.sign(distance);
       const { stride, progress } = mobileSequencePosition();
-      const destination = target < 0 ? -Math.min(160, Math.abs(distance)) : stride * target;
-      event.preventDefault();
-      positionMobileSequence(destination, progress);
-    });
+      const distance = (start.y - touch.clientY) * start.direction;
+      const threshold = Math.min(145, Math.max(100, innerHeight * .18));
+      const target = distance >= threshold ? start.index + start.direction : start.index;
+      positionMobileSequence(stride * target, progress);
+    }, { passive: true });
 
     window.addEventListener('scroll', scheduleSequence, { passive: true });
     window.addEventListener('resize', syncSequenceLayout);
