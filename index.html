@@ -672,6 +672,19 @@
     .controls button:hover { background: #e0efed; }
     .controls button[aria-current="step"] { color: #fff; background: var(--teal); }
     .controls button:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+    .sequence-finish {
+      display: inline-grid;
+      align-items: center;
+      min-height: 44px;
+      visibility: hidden;
+      color: var(--teal);
+      font-size: .875rem;
+      font-weight: 650;
+      text-underline-offset: .22em;
+      text-decoration-skip-ink: none;
+    }
+    .controls:has(button:last-of-type[aria-current="step"]) .sequence-finish { visibility: visible; }
+    .sequence-finish:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
 
     .enhanced .desktop-diagram :is(.house, .resident, .ownership-badge) {
       transition: transform 620ms cubic-bezier(.25, .7, .25, 1), opacity 325ms ease;
@@ -771,6 +784,11 @@
       .hero-inner, .explanation, .payout, .regional, .process { width: calc(100% - 2rem); }
       .hero-media { width: calc(100% + 2rem); margin-inline: -1rem; }
       .intro { margin-bottom: 1.5rem; }
+    }
+
+    @media (max-width: 23rem) {
+      .enhanced .controls { column-gap: .2rem; }
+      .sequence-finish { font-size: .8125rem; }
     }
 
     @media (prefers-reduced-motion: no-preference) {
@@ -929,6 +947,7 @@
               <button type="button" aria-label="Schritt 2: Der Verkauf Ihrer Immobilie">2</button>
               <button type="button" aria-label="Schritt 3: Lebenslang zu Hause bleiben">3</button>
               <button type="button" aria-label="Schritt 4: Mehr Spielraum durch eine Sofortrente">4</button>
+              <a class="sequence-finish" href="#auszahlung" aria-label="Weiter zur Auszahlung"><span>Auszahlung&nbsp;<span aria-hidden="true">↓</span></span></a>
             </div>
           </div>
         </div>
@@ -1316,6 +1335,7 @@
     const desktopDiagram = sequence.querySelector('.desktop-diagram');
     const steps = [...sequence.querySelectorAll('.step')];
     const stepButtons = [...sequence.querySelectorAll('.controls button')];
+    const payoutSection = document.querySelector('#auszahlung');
     const motion = matchMedia('(prefers-reduced-motion: no-preference)');
     let current = -1;
     let frame = 0;
@@ -1361,6 +1381,10 @@
       window.scrollTo({ top: window.scrollY - progress + position, behavior: 'instant' });
     }
 
+    function goToPayout() {
+      payoutSection.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+
     function stopWheelAtStep(event) {
       if (!pinned || !event.cancelable || event.defaultPrevented || event.ctrlKey || event.metaKey || event.shiftKey ||
           Math.abs(event.deltaX) >= Math.abs(event.deltaY) || document.querySelector('.calculator-dialog[open], .mobile-nav[open]')) return;
@@ -1377,9 +1401,9 @@
       const end = stride * steps.length;
       const delta = event.deltaY * ([1, 32, innerHeight][event.deltaMode] || 1);
       let stop;
-      if (direction > 0 && progress < last - 1) {
+      if (direction > 0 && progress < end - 1) {
         stop = Math.max(0, (Math.floor((progress + 1) / stride) + 1) * stride);
-        if (progress + delta < stop) return;
+        if (stop <= last && progress + delta < stop) return;
       } else if (direction < 0 && progress > 1) {
         stop = progress > end + 1 ? end : (Math.ceil((progress - 1) / stride) - 1) * stride;
         if (progress + delta > stop) return;
@@ -1389,7 +1413,8 @@
       event.preventDefault();
       heldWheelDirection = direction;
       lastWheelAt = now;
-      goToSequencePosition(stop, progress);
+      if (direction > 0 && stop > last) goToPayout();
+      else goToSequencePosition(stop, progress);
     }
 
     function syncLayout() {
@@ -1424,9 +1449,12 @@
       if (Math.abs(distance) < 38 || Math.abs(distance) <= Math.abs(start.clientX - touch.clientX)) return;
       event.preventDefault();
       const target = current + Math.sign(distance);
+      if (target === steps.length) {
+        goToPayout();
+        return;
+      }
       const { stride, progress } = getScrollPosition();
-      const extra = Math.min(160, Math.abs(distance));
-      const destination = target < 0 ? -extra : stride * target + (target === steps.length ? extra : 0);
+      const destination = target < 0 ? -Math.min(160, Math.abs(distance)) : stride * target;
       goToSequencePosition(destination, progress);
     });
     motion.addEventListener('change', syncLayout);
