@@ -220,6 +220,8 @@
     .hero-link:focus-visible { outline: 2px solid var(--teal); outline-offset: 4px; }
     .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .1rem 1rem; margin-top: 1.6rem; }
     .hero-actions .hero-link, .hero-actions .text-link { margin: 0; }
+    .hero-actions .text-link { text-decoration: none; }
+    .hero-actions .text-link > span { text-decoration: underline; text-decoration-skip-ink: none; }
 
     .explanation {
       margin-top: clamp(3.25rem, 7vw, 6rem);
@@ -814,7 +816,7 @@
           <p>Mit bleibrente verkaufen Sie Ihr Haus oder Ihre Wohnung mit lebenslangem Nießbrauch. Aus dem Verkaufserlös können Sie eine monatliche Sofortrente finanzieren.</p>
           <div class="hero-actions">
             <a class="hero-link" href="immobilienrechner.html" data-open-rechner>Immobilienrechner starten <span aria-hidden="true">→</span></a>
-            <a class="text-link" href="#warum-bleibrente">Warum bleibrente? <span aria-hidden="true">↓</span></a>
+            <a class="text-link" href="#warum-bleibrente"><span>Warum bleibrente?&nbsp;<span aria-hidden="true">↓</span></span></a>
           </div>
         </div>
         <div class="hero-media">
