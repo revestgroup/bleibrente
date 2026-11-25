@@ -1214,6 +1214,9 @@
     mobileNav.addEventListener('click', (event) => {
       if (event.target.closest('a[href^="#"]')) mobileNav.open = false;
     });
+    mobileNav.addEventListener('focusout', (event) => {
+      if (event.relatedTarget && !mobileNav.contains(event.relatedTarget)) mobileNav.open = false;
+    });
     mobileNav.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape' || !mobileNav.open) return;
       event.preventDefault();
