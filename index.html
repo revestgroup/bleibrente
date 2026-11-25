@@ -89,23 +89,20 @@
       .site-header .desktop-nav { display: none; }
       .mobile-nav { display: block; }
       .mobile-nav summary {
-        display: inline-flex;
-        align-items: center;
-        gap: .5rem;
-        min-height: 44px;
-        padding: .4rem .65rem;
-        border: 1px solid var(--line);
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
         border-radius: .4rem;
         cursor: pointer;
         color: var(--ink);
-        font-weight: 650;
-        font-size: 1rem;
         list-style: none;
       }
       .mobile-nav summary::-webkit-details-marker { display: none; }
       .mobile-nav summary:hover, .mobile-nav[open] summary { background: var(--paper); color: var(--teal); }
       .mobile-nav summary:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
-      .mobile-nav summary svg { width: 1.2rem; height: 1.2rem; }
+      .mobile-nav summary svg { width: 1.5rem; height: 1.5rem; }
       .mobile-nav summary .menu-close, .mobile-nav[open] summary .menu-open { display: none; }
       .mobile-nav[open] summary .menu-close { display: block; }
       .mobile-nav .site-nav {
@@ -784,7 +781,7 @@
 
   <header class="site-header">
     <div class="site-shell">
-      <a class="brand" href="#seitenanfang" aria-label="bleibrente, Seitenanfang"><img src="bleibrente-logo-offene-tuer.svg" width="202" height="38" alt="bleibrente"></a>
+      <a class="brand" href="./" aria-label="bleibrente, Startseite"><img src="bleibrente-logo-offene-tuer.svg" width="202" height="38" alt="bleibrente"></a>
       <nav class="site-nav desktop-nav" aria-label="Hauptnavigation">
         <a href="#so-funktionierts">So funktioniert’s</a>
         <a href="#auszahlung">Auszahlung</a>
@@ -793,12 +790,11 @@
         <a href="immobilienrechner.html" data-open-rechner>Rechner</a>
       </nav>
       <details class="mobile-nav">
-        <summary>
+        <summary aria-label="Hauptmenü">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
             <path class="menu-open" d="M4 6h16M4 12h16M4 18h16"/>
             <path class="menu-close" d="m6 6 12 12M18 6 6 18"/>
           </svg>
-          Menü
         </summary>
         <nav class="site-nav" aria-label="Hauptnavigation">
           <a href="#so-funktionierts">So funktioniert’s</a>
@@ -1102,7 +1098,7 @@
   <footer class="site-footer">
     <div class="site-shell">
       <div>
-        <a class="brand" href="#seitenanfang" aria-label="bleibrente, Seitenanfang"><img src="bleibrente-logo-offene-tuer.svg" width="202" height="38" alt="bleibrente"></a>
+        <a class="brand" href="./" aria-label="bleibrente, Startseite"><img src="bleibrente-logo-offene-tuer.svg" width="202" height="38" alt="bleibrente"></a>
         <p class="footer-tagline">bleibrente bringt Eigentümer und Käufer zusammen. So können Sie nach dem Verkauf in Ihrem Zuhause bleiben, gebundenes Kapital nutzen und auf Wunsch eine lebenslange Sofortrente finanzieren.</p>
       </div>
       <nav class="footer-group" aria-labelledby="footer-navigation-title">
@@ -1137,6 +1133,25 @@
   <script>
     const siteHeader = document.querySelector('.site-header');
     const mobileNav = siteHeader.querySelector('.mobile-nav');
+    const homeLogo = siteHeader.querySelector('.brand');
+    const footerLogo = document.querySelector('.site-footer .brand');
+    function cleanLegacyHomeLink() {
+      if (location.hash === '#seitenanfang') {
+        history.replaceState(history.state, '', homeLogo.href + location.search);
+      }
+    }
+    window.addEventListener('hashchange', cleanLegacyHomeLink);
+    cleanLegacyHomeLink();
+    for (const logo of [homeLogo, footerLogo]) {
+      logo.addEventListener('click', (event) => {
+        if (event.button || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+        event.preventDefault();
+        history.replaceState(history.state, '', homeLogo.href + location.search);
+        mobileNav.open = false;
+        homeLogo.focus({ preventScroll: true });
+        window.scrollTo({ top: 0 });
+      });
+    }
     function syncHeader() {
       siteHeader.classList.toggle('is-scrolled', window.scrollY > 12);
     }
