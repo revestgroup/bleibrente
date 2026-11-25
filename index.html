@@ -247,6 +247,7 @@
       --step-scroll-offset: calc(var(--header-height) + 8.5rem);
       margin-top: clamp(3.25rem, 7vw, 6rem);
       margin-bottom: 4.5rem;
+      padding-bottom: clamp(1.5rem, 5svh, 3rem);
       scroll-margin-top: calc(var(--header-height) + 1rem);
     }
 
@@ -538,11 +539,10 @@
       margin-top: clamp(1.5rem, 4vw, 3.5rem);
     }
 
-    .steps { padding-bottom: clamp(4.75rem, 13svh, 7.5rem); }
-
     .sequence-visual {
+      --sequence-top: calc(var(--header-height) + 2rem);
       position: sticky;
-      top: calc(var(--header-height) + 2rem);
+      top: calc(var(--sequence-top) + var(--sequence-exit, 0px));
       align-self: start;
       background: #fff;
     }
@@ -624,7 +624,7 @@
 
       .explanation-title { font-size: clamp(1.7rem, 5.4vw, 2.4rem); }
       .explanation-flow { grid-template-columns: minmax(0, 1fr); gap: 1.15rem; }
-      .sequence-visual { top: var(--header-height); z-index: 1; padding-block: .25rem .75rem; }
+      .sequence-visual { --sequence-top: var(--header-height); z-index: 1; padding-block: .25rem .75rem; }
       .sequence-visual .illustration { height: var(--diagram-height); }
       .sequence-visual .ownership-badge text { font-size: 20px; }
       .step p { font-size: 1rem; }
@@ -1210,15 +1210,24 @@
     const sequenceVisual = document.querySelector('.sequence-visual');
     const sequenceSteps = [...document.querySelectorAll('.explanation .step')];
     const sequenceLinks = [...sequenceVisual.querySelectorAll('.step-nav a')];
+    const finalStep = sequenceSteps.at(-1);
     let sequenceFrame = 0;
+    let sequenceExit = 0;
 
     function syncSequence() {
       sequenceFrame = 0;
-      const readingLine = parseFloat(getComputedStyle(sequenceSteps[0]).scrollMarginTop) + 14;
+      const stepOffset = parseFloat(getComputedStyle(finalStep).scrollMarginTop);
+      const exit = Math.max(-innerHeight, Math.min(0, finalStep.getBoundingClientRect().top - stepOffset));
+      const readingLine = stepOffset + 14;
       let index = 0;
       for (const [stepIndex, step] of sequenceSteps.entries()) {
         if (step.getBoundingClientRect().top > readingLine) break;
         index = stepIndex;
+      }
+
+      if (exit !== sequenceExit) {
+        sequenceVisual.style.setProperty('--sequence-exit', `${exit}px`);
+        sequenceExit = exit;
       }
 
       if (sequenceVisual.dataset.scene === String(index)) return;
