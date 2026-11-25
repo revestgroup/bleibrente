@@ -227,7 +227,6 @@
     .hero-link {
       display: inline-flex;
       align-items: center;
-      gap: .65rem;
       min-height: 48px;
       margin-top: 1.6rem;
       padding: .55rem 1rem;
@@ -243,8 +242,6 @@
     .hero-link:focus-visible { outline: 2px solid var(--teal); outline-offset: 4px; }
     .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .1rem 1rem; margin-top: 1.6rem; }
     .hero-actions .hero-link, .hero-actions .text-link { margin: 0; }
-    .hero-actions .text-link { text-decoration: none; }
-    .hero-actions .text-link > span { text-decoration: underline; text-decoration-skip-ink: none; }
 
     .explanation {
       --step-scroll-offset: calc(var(--header-height) + 8.5rem);
@@ -272,18 +269,16 @@
     .step { scroll-margin-top: var(--step-scroll-offset); }
     .step p { margin-top: .75rem; max-width: 45ch; color: var(--body); }
     .step .example { font-size: 1rem; }
-    .step + .step { margin-top: clamp(2.25rem, 4vw, 3.5rem); }
+    .step + .step { margin-top: clamp(4.5rem, 13svh, 8rem); }
     .step.is-current h3 { color: var(--teal); }
 
     .text-link {
       color: var(--teal);
       font-weight: 650;
-      text-decoration: underline;
-      text-underline-offset: .22em;
+      text-decoration: none;
       display: inline-flex;
       min-height: 44px;
       align-items: center;
-      gap: .45em;
       margin-top: .4rem;
     }
 
@@ -543,6 +538,8 @@
       margin-top: clamp(1.5rem, 4vw, 3.5rem);
     }
 
+    .steps { padding-bottom: clamp(4.75rem, 13svh, 7.5rem); }
+
     .sequence-visual {
       position: sticky;
       top: calc(var(--header-height) + 2rem);
@@ -747,8 +744,8 @@
           <h1>Zuhause bleiben. <span>Die Rente ergänzen.</span></h1>
           <p>Mit bleibrente verkaufen Sie Ihr Haus oder Ihre Wohnung mit lebenslangem Nießbrauch. Aus dem Verkaufserlös können Sie eine monatliche Sofortrente finanzieren.</p>
           <div class="hero-actions">
-            <a class="hero-link" href="immobilienrechner.html" data-open-rechner>Immobilienrechner starten <span aria-hidden="true">→</span></a>
-            <a class="text-link" href="#warum-bleibrente"><span>Warum bleibrente?&nbsp;<span aria-hidden="true">↓</span></span></a>
+            <a class="hero-link" href="immobilienrechner.html" data-open-rechner><span class="link-label">Immobilienrechner <span class="link-ending">starten<span aria-hidden="true">→</span></span></span></a>
+            <a class="text-link" href="#warum-bleibrente"><span class="link-label">Warum <span class="link-ending">bleibrente?<span aria-hidden="true">↓</span></span></span></a>
           </div>
         </div>
         <div class="hero-media">
@@ -831,7 +828,7 @@
           <article class="step" id="erklaerschritt-3">
             <h3>Lebenslang zu Hause bleiben</h3>
             <p>Der lebenslange Nießbrauch wird im Grundbuch eingetragen. Damit können Sie auch nach dem Verkauf in Ihrem Zuhause wohnen bleiben.</p>
-            <a class="text-link" href="niessbrauch.html">Nießbrauch einfach erklärt <span aria-hidden="true">→</span></a>
+            <a class="text-link" href="niessbrauch.html"><span class="link-label">Nießbrauch einfach <span class="link-ending">erklärt<span aria-hidden="true">→</span></span></span></a>
           </article>
 
           <article class="step" id="erklaerschritt-4">
@@ -915,7 +912,7 @@
       </div>
 
       <nav class="payout-links" aria-label="Weiterführende Informationen zur Auszahlung">
-        <a class="text-link" href="sofortrente.html">Sofortrente einfach erklärt <span aria-hidden="true">→</span></a>
+        <a class="text-link" href="sofortrente.html"><span class="link-label">Sofortrente einfach <span class="link-ending">erklärt<span aria-hidden="true">→</span></span></span></a>
       </nav>
     </section>
 
@@ -1062,7 +1059,7 @@
           <h2 id="contact-title">Was ist für Sie und Ihre Immobilie möglich?</h2>
           <p>Erhalten Sie in wenigen Schritten eine erste Einschätzung, welchen Erlös ein Verkauf mit lebenslangem Nießbrauch ermöglichen könnte.</p>
         </div>
-        <a class="calculator-cta" href="immobilienrechner.html" data-open-rechner>Immobilienrechner starten <span aria-hidden="true">→</span></a>
+        <a class="calculator-cta" href="immobilienrechner.html" data-open-rechner><span class="link-label">Immobilienrechner <span class="link-ending">starten<span aria-hidden="true">→</span></span></span></a>
       </div>
     </section>
   </main>
@@ -1217,7 +1214,7 @@
 
     function syncSequence() {
       sequenceFrame = 0;
-      const readingLine = parseFloat(getComputedStyle(sequenceSteps[0]).scrollMarginTop) + 40;
+      const readingLine = parseFloat(getComputedStyle(sequenceSteps[0]).scrollMarginTop) + 14;
       let index = 0;
       for (const [stepIndex, step] of sequenceSteps.entries()) {
         if (step.getBoundingClientRect().top > readingLine) break;
