@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Schätzen Sie den möglichen Kaufpreis Ihrer Immobilie bei einem Verkauf mit lebenslangem Nießbrauch. Kostenlos und ohne Angabe von Kontaktdaten.">
+  <meta name="robots" content="noindex">
+  <title>Kaufpreis mit Nießbrauch schätzen | bleibrente</title>
+  <link rel="icon" type="image/svg+xml" href="bleibrente-tuer-symbol.svg">
+  <link rel="stylesheet" href="bleibrente-site.css">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172636;
+      --body: #405056;
+      --teal: #195b65;
+      --paper: #f2f7f6;
+      --mint: #eaf2ee;
+      --line: #b1c3c0;
+      --error: #9a2828;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 1.0625rem/1.55 system-ui, sans-serif;
+      text-align: left;
+    }
+    h1, h2, h3, p, fieldset, dl, dd { margin: 0; }
+    a { color: var(--teal); text-underline-offset: .22em; }
+    button, input, select { font: inherit; }
+    :focus-visible { outline: 2px solid var(--teal); outline-offset: 4px; }
+
+    .header-inner {
+      width: min(71rem, calc(100% - 2rem));
+      min-height: 4.5rem;
+      margin-inline: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+    }
+    .exit { display: inline-flex; align-items: center; min-height: 44px; font-size: 1rem; }
+
+    .calculator {
+      width: min(39rem, calc(100% - 2rem));
+      margin: clamp(.85rem, 4vh, 2.75rem) auto 3rem;
+      padding: clamp(1.5rem, 4vw, 2.75rem);
+      border-radius: .9rem;
+      background: #fff;
+      box-shadow: 0 12px 42px #1726360a;
+    }
+    .progress {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      color: var(--body);
+      font-size: .95rem;
+    }
+    .progress-track { display: flex; gap: .35rem; }
+    .progress-track span { width: 1rem; height: .25rem; border-radius: 1rem; background: #e0e9e6; }
+    .progress-track .filled { background: var(--teal); }
+    .step-heading { margin-top: 1.3rem; }
+    .step-heading svg { display: block; width: 3.15rem; height: 3.15rem; margin-bottom: .85rem; }
+    .step-heading:focus { outline: none; }
+    h1, h2 { font-size: clamp(1.9rem, 5vw, 2.5rem); line-height: 1.1; letter-spacing: -.043em; }
+    .subtitle { margin-top: .65rem; color: var(--body); }
+
+    fieldset { min-inline-size: 0; padding: 0; border: 0; }
+    legend { padding: 0; font-weight: 680; }
+    .group { margin-top: 1.35rem; }
+    .choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; margin-top: .6rem; }
+    .choice {
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .65rem .75rem;
+      border: 1px solid var(--line);
+      border-radius: .5rem;
+      cursor: pointer;
+      line-height: 1.35;
+      font-weight: 620;
+    }
+    .choice:hover, .choice:has(:checked) { background: var(--mint); border-color: var(--teal); }
+    .choice:has(:focus-visible) { outline: 2px solid var(--teal); outline-offset: 3px; }
+    .choice input { margin: 0; width: 1rem; height: 1rem; flex: none; accent-color: var(--teal); }
+    .choice svg { width: 1.5rem; height: 1.5rem; flex: none; color: var(--teal); }
+    .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; }
+    .wide { grid-column: 1 / -1; }
+    .field > label { display: block; margin-bottom: .35rem; font-weight: 650; }
+    .field input, .field select {
+      min-height: 48px;
+      width: 100%;
+      padding: .55rem .7rem;
+      border: 1px solid var(--line);
+      border-radius: .4rem;
+      color: var(--ink);
+      background: #fff;
+    }
+    .field select { padding-right: 1.7rem; }
+    .help { margin-top: .45rem; color: var(--body); font-size: .95rem; }
+    .error { margin-top: .5rem; color: var(--error); font-weight: 620; }
+    [aria-invalid="true"] { border-color: var(--error) !important; }
+    .controls { display: flex; flex-wrap: wrap; align-items: center; gap: .65rem 1.2rem; margin-top: 1.4rem; }
+    .action, .link-button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: .55rem;
+      min-height: 48px;
+      width: fit-content;
+      max-width: 100%;
+      cursor: pointer;
+      font-weight: 650;
+      line-height: 1.35;
+      text-align: left;
+    }
+    .action { padding: .65rem 1rem; border: 0; border-radius: .42rem; background: var(--teal); color: #fff; text-decoration: none; }
+    .action:hover { background: #124750; }
+    .action:disabled { opacity: .7; cursor: wait; }
+    .link-button { padding: 0; border: 0; background: transparent; color: var(--teal); text-decoration: underline; text-underline-offset: .22em; }
+
+    .estimate { margin-top: 1.15rem; padding: clamp(1rem, 3vw, 1.35rem); border-radius: .6rem; background: var(--mint); }
+    .estimate p:first-child { color: var(--teal); font-weight: 650; }
+    .amount { display: block; margin-block: .25rem; font-size: clamp(1.65rem, 5vw, 2.45rem); line-height: 1.18; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+    .help + .help { margin-top: .6rem; }
+    details { margin-top: 1rem; }
+    summary { width: fit-content; min-height: 44px; padding-block: .55rem; color: var(--teal); font-weight: 650; cursor: pointer; }
+    .breakdown { display: grid; gap: .65rem; margin-block: .45rem .8rem; }
+    .breakdown div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .15rem .8rem; }
+    .breakdown dd { font-weight: 650; font-variant-numeric: tabular-nums; }
+    .split-slider { display: block; width: 100%; min-height: 44px; accent-color: var(--teal); cursor: pointer; margin: .15rem 0 .4rem; }
+    .split-label { font-weight: 650; }
+    .result-contact { margin-top: 1.65rem; padding-top: 1.35rem; border-top: 1px solid var(--line); }
+    .result-contact p { margin: .65rem 0 .5rem; color: var(--body); }
+
+    html.embedded body { background: #fff; }
+    html.embedded body > header { display: none; }
+    html.embedded .calculator { width: 100%; min-height: 0; margin: 0; padding: .75rem clamp(1rem, 4vw, 2.1rem) 1.6rem; box-shadow: none; border-radius: 0; }
+    html.embedded .step-heading { margin-top: .85rem; }
+    html.embedded .step-heading svg { width: 2.3rem; height: 2.3rem; margin-bottom: .6rem; }
+    @media (max-width: 40rem) {
+      .header-inner { min-height: 3.75rem; }
+      .calculator { width: 100%; margin: 0; min-height: calc(100vh - 3.75rem); min-height: calc(100svh - 3.75rem); padding: 1.15rem 1rem 2rem; border-radius: 0; }
+      .controls .action { flex-basis: 100%; }
+      .choice { padding-inline: .55rem; gap: .4rem; }
+    }
+    @media (max-width: 23rem) {
+      .fields { grid-template-columns: minmax(0, 1fr); }
+      #property-form > .fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 20rem) {
+      .choices, #property-form > .fields { grid-template-columns: minmax(0, 1fr); }
+    }
+  </style>
+  <script src="rechner-fenster.js" defer></script>
+  <script src="immobilienrechner.js" defer></script>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" hidden>
+    <symbol id="house" viewBox="0 0 48 48">
+      <rect x="1" y="1" width="46" height="46" rx="12" fill="#eaf2ee"/>
+      <g fill="none" stroke="#195b65" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 23 24 11l15 12M13 21v15h22V21M21 36V26h6v10"/>
+      </g>
+      <rect x="29" y="15" width="4" height="4" rx="1" fill="#bc9858"/>
+    </symbol>
+    <symbol id="people" viewBox="0 0 48 48">
+      <rect x="1" y="1" width="46" height="46" rx="12" fill="#eaf2ee"/>
+      <g fill="none" stroke="#195b65" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="19" cy="17" r="4.5"/><path d="M10 35v-3a9 9 0 0 1 18 0v3m3-11a7 7 0 0 1 7 7v4"/>
+      </g>
+      <circle cx="31.5" cy="17" r="3.8" fill="#bc9858"/>
+    </symbol>
+    <symbol id="price" viewBox="0 0 48 48">
+      <rect x="1" y="1" width="46" height="46" rx="12" fill="#eaf2ee"/>
+      <path d="M14 11h14l6 6v20H14z" fill="#fff" stroke="#195b65" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="M27 11v7h7M26 23a4 4 0 1 0 0 8m-7-5h6m-6 2h5" fill="none" stroke="#195b65" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="34" cy="32" r="5" fill="#bc9858"/>
+    </symbol>
+    <symbol id="single-small" viewBox="0 0 24 24">
+      <g fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"><circle cx="12" cy="7" r="3.2"/><path d="M6 20v-1a6 6 0 0 1 12 0v1"/></g>
+    </symbol>
+    <symbol id="pair-small" viewBox="0 0 24 24">
+      <g fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"><circle cx="9" cy="7" r="3.1"/><path d="M3 20v-1a6 6 0 0 1 12 0v1m1-16a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 5v1"/></g>
+    </symbol>
+    <symbol id="call-small" viewBox="0 0 24 24">
+      <path d="M19 15l-3.3-1.5a1 1 0 0 0-1.1.2L13 15a12 12 0 0 1-4-4l1.3-1.6a1 1 0 0 0 .2-1.1L9 5a1 1 0 0 0-1.1-.5L5 5a1 1 0 0 0-.8 1 15 15 0 0 0 13.8 14 1 1 0 0 0 1-.8l.5-2.9A1 1 0 0 0 19 15Z" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="house-small" viewBox="0 0 24 24">
+      <path d="M3 11l9-7 9 7M6 9v11h12V9m-8 11v-6h4v6" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+  </svg>
+
+  <header>
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="bleibrente, Startseite"><img src="bleibrente-logo-offene-tuer.svg" width="202" height="38" alt="bleibrente"></a>
+      <a class="exit" href="index.html">Zur Website</a>
+    </div>
+  </header>
+
+  <main class="calculator">
+    <noscript>
+      <h1>Immobilienrechner</h1>
+      <p class="subtitle">Für die Online-Berechnung muss JavaScript aktiv sein. Bei Fragen können Sie uns direkt per E-Mail schreiben.</p>
+      <a href="mailto:info@bleibrente.de">E-Mail schreiben</a>
+    </noscript>
+
+    <div id="calculator-content" hidden>
+      <div class="progress" id="calculator-progress">
+        <p id="progress-label">Schritt 1 von 3</p>
+        <div class="progress-track" aria-hidden="true"><span></span><span></span><span></span></div>
+      </div>
+
+      <section data-step="1" aria-labelledby="property-title">
+        <div class="step-heading" tabindex="-1">
+          <svg aria-hidden="true" focusable="false"><use href="#house"/></svg>
+          <h1 id="property-title">Was ist Ihre Immobilie wert?</h1>
+          <p class="subtitle">Aus Ihren Eckdaten schätzen wir den Immobilienwert und den möglichen Kaufpreis mit Nießbrauch.</p>
+        </div>
+
+        <form id="property-form" novalidate>
+          <fieldset class="group">
+            <legend>Welche Immobilie besitzen Sie?</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="property-type" value="haus" checked><svg aria-hidden="true" focusable="false"><use href="#house-small"/></svg>Haus</label>
+              <label class="choice"><input type="radio" name="property-type" value="wohnung"><svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M5 21V3h14v18M3 21h18M9 7h1m4 0h1M9 11h1m4 0h1m-6 4h1m4 0h1m-4 6v-3h2v3" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/></svg>Wohnung</label>
+            </div>
+          </fieldset>
+          <div class="fields group">
+            <div class="field wide">
+              <label for="postal-code">Postleitzahl der Immobilie</label>
+              <input id="postal-code" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5" placeholder="z. B. 82319" required aria-describedby="postal-error">
+              <p class="error" id="postal-error" hidden></p>
+            </div>
+            <div class="field">
+              <label for="floor-area">Wohnfläche in m²</label>
+              <input id="floor-area" type="text" inputmode="decimal" maxlength="10" placeholder="z. B. 140" required aria-describedby="area-error">
+              <p class="error" id="area-error" hidden></p>
+            </div>
+            <div class="field">
+              <label for="build-year">Baujahr</label>
+              <input id="build-year" type="text" inputmode="numeric" maxlength="4" placeholder="z. B. 1985" required aria-describedby="build-year-error">
+              <p class="error" id="build-year-error" hidden></p>
+            </div>
+          </div>
+          <div class="estimate property-preview" hidden>
+            <p>Geschätzter Immobilienwert ohne Nießbrauch</p>
+            <strong id="property-price" class="amount"></strong>
+            <p id="property-price-note" class="help"></p>
+            <a id="property-price-source" class="help" target="_blank" rel="noopener" hidden></a>
+          </div>
+          <details>
+            <summary>Eigene Werte übernehmen</summary>
+            <p class="help">Falls Ihnen ein eigener Marktwert oder eine vergleichbare Kaltmiete vorliegt, können Sie die Schätzung hier anpassen.</p>
+            <div class="fields group">
+              <div class="field">
+                <label for="market-value">Marktwert in €</label>
+                <input id="market-value" type="text" inputmode="decimal" maxlength="19" aria-describedby="value-error">
+                <p class="error" id="value-error" hidden></p>
+              </div>
+              <div class="field">
+                <label for="monthly-rent">Monatliche Kaltmiete in €</label>
+                <input id="monthly-rent" type="text" inputmode="decimal" maxlength="16" aria-describedby="rent-error">
+                <p class="error" id="rent-error" hidden></p>
+              </div>
+            </div>
+          </details>
+          <div class="controls"><button class="action" type="submit">Weiter <span aria-hidden="true">→</span></button></div>
+        </form>
+      </section>
+
+      <section data-step="2" aria-labelledby="people-title" hidden>
+        <div class="step-heading" tabindex="-1">
+          <svg aria-hidden="true" focusable="false"><use href="#people"/></svg>
+          <h2 id="people-title">Wer möchte wohnen bleiben?</h2>
+          <p class="subtitle">Das Alter beeinflusst, wie sich das lebenslange Nutzungsrecht auf den Kaufpreis auswirkt.</p>
+        </div>
+        <form id="people-form" novalidate>
+          <fieldset class="group">
+            <legend>Für wen soll der Nießbrauch gelten?</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="occupants" value="single" checked><svg aria-hidden="true" focusable="false"><use href="#single-small"/></svg>Für eine Person</label>
+              <label class="choice"><input type="radio" name="occupants" value="pair"><svg aria-hidden="true" focusable="false"><use href="#pair-small"/></svg>Für zwei Personen</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="group" id="person-one">
+            <legend id="first-legend">Angaben zur Person</legend>
+            <div class="fields">
+              <div class="field">
+                <label for="age-one">Alter in Jahren</label>
+                <input id="age-one" type="text" inputmode="numeric" maxlength="3" required aria-describedby="age-one-error">
+                <p class="error" id="age-one-error" hidden></p>
+              </div>
+              <div class="field">
+                <label for="table-one">Geschlecht für die Sterbetafel</label>
+                <select id="table-one"><option value="">Keine Angabe</option><option value="female">Weiblich</option><option value="male">Männlich</option></select>
+              </div>
+            </div>
+          </fieldset>
+          <fieldset class="group" id="person-two" hidden disabled>
+            <legend>Person 2</legend>
+            <div class="fields">
+              <div class="field">
+                <label for="age-two">Alter in Jahren</label>
+                <input id="age-two" type="text" inputmode="numeric" maxlength="3" required aria-describedby="age-two-error">
+                <p class="error" id="age-two-error" hidden></p>
+              </div>
+              <div class="field">
+                <label for="table-two">Geschlecht für die Sterbetafel</label>
+                <select id="table-two"><option value="">Keine Angabe</option><option value="female">Weiblich</option><option value="male">Männlich</option></select>
+              </div>
+            </div>
+            <div class="field group">
+              <label for="right-end">Wann soll der gemeinsame Nießbrauch enden?</label>
+              <select id="right-end" aria-describedby="right-end-error" required>
+                <option value="">Bitte wählen</option>
+                <option value="last">Wenn beide Personen verstorben sind</option>
+                <option value="first">Wenn die erste Person verstirbt</option>
+              </select>
+              <p class="error" id="right-end-error" hidden></p>
+            </div>
+          </fieldset>
+          <p class="help">Online berechenbar für Personen von 60 bis 100 Jahren. Ohne Geschlechtsangabe berücksichtigt die Schätzung beide veröffentlichten Tabellen.</p>
+          <div class="controls">
+            <button class="action" type="submit">Ergebnis anzeigen <span aria-hidden="true">→</span></button>
+            <button class="link-button" type="button" data-go="1">Zurück zur Immobilie</button>
+          </div>
+        </form>
+      </section>
+
+      <section data-step="3" aria-labelledby="result-title" hidden>
+        <div class="step-heading" tabindex="-1">
+          <svg aria-hidden="true" focusable="false"><use href="#price"/></svg>
+          <h2 id="result-title">Ihr geschätzter Kaufpreis</h2>
+        </div>
+        <div class="estimate">
+          <p id="result-label">Bei Verkauf mit lebenslangem Nießbrauch</p>
+          <strong id="price-range" class="amount" aria-describedby="result-label"></strong>
+          <p class="help" id="result-copy"></p>
+        </div>
+
+        <details id="method">
+          <summary>Wie kommt die Schätzung zustande?</summary>
+          <p class="help" id="result-assumptions"></p>
+          <dl class="breakdown">
+            <div><dt>Immobilienwert ohne Nießbrauch</dt><dd id="result-market"></dd></div>
+            <div><dt>Angesetzte Kaltmiete im Jahr</dt><dd id="result-rent"></dd></div>
+            <div><dt>Geschätzter Abschlag durch den Nießbrauch</dt><dd id="result-deduction"></dd></div>
+          </dl>
+          <p class="help">Wir gewichten die Jahreskaltmiete mit den altersabhängigen Überlebenswahrscheinlichkeiten und rechnen sie auf den heutigen Wert um. Für die Spanne verwenden wir zwei beispielhafte Zinssätze von 3&nbsp;% und 5&nbsp;%. Die passende Verzinsung und die vertragliche Kostenverteilung prüfen wir bei der Bewertung.</p>
+          <p class="help">Bei zwei Personen modellieren wir die Überlebenswahrscheinlichkeiten unabhängig voneinander. Ab Alter 101 schreiben wir die letzte erfasste jährliche Überlebenswahrscheinlichkeit fort.</p>
+          <p class="help"><a href="https://genesis.destatis.de/datenbank/online/statistic/12621/table/12621-0001" target="_blank" rel="noopener">Destatis, Periodensterbetafel Deutschland 2023/2025</a> · <a href="https://www.gesetze-im-internet.de/immowertv_2022/__47.html" target="_blank" rel="noopener">§ 47 ImmoWertV</a></p>
+        </details>
+
+        <details id="split" open>
+          <summary>Verkaufserlös aufteilen</summary>
+          <p class="help">Probieren Sie aus, welchen Anteil Sie als Einmalzahlung behalten und welchen Teil Sie für eine Sofortrente einsetzen könnten.</p>
+          <div class="group">
+            <label for="annuity-share" class="split-label">Anteil für die Sofortrente</label>
+            <input id="annuity-share" class="split-slider" type="range" min="0" max="100" step="5" value="50">
+            <p class="help"><output id="split-share" for="annuity-share">50 %</output> für die Sofortrente</p>
+          </div>
+          <dl class="breakdown">
+            <div><dt>Als Einmalzahlung behalten</dt><dd id="split-upfront"></dd></div>
+            <div><dt>Für die Sofortrente einsetzen</dt><dd id="split-premium"></dd></div>
+          </dl>
+          <div class="field" id="annuity-person-field" hidden>
+            <label for="annuity-person">Beispielrente für</label>
+            <select id="annuity-person"><option value="0">Person 1</option><option value="1">Person 2</option></select>
+          </div>
+          <dl class="breakdown" id="annuity-example">
+            <div><dt>Beispiel für die Monatsrente</dt><dd id="monthly-example"></dd></div>
+          </dl>
+          <p class="help" id="annuity-note">Die Monatsrente ist eine Modellrechnung mit den Beispielwerten des bisherigen Rechners. Die tatsächliche Rente ergibt sich aus dem Versicherungsangebot.</p>
+          <a href="sofortrente.html" target="_blank" rel="noopener">Sofortrente erklärt</a>
+        </details>
+
+        <div class="result-contact">
+          <h3>So würde die Anfrage weitergehen</h3>
+          <p>In dieser Vorschau können Sie die Bestätigung ausprobieren. Es werden keine Kontaktdaten abgefragt oder Anfragen gesendet.</p>
+          <div class="controls">
+            <button class="action" type="button" id="preview-confirmation">Danke-Seite ansehen <span aria-hidden="true">→</span></button>
+            <button class="link-button" type="button" data-go="2">Angaben ändern</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer">
+    <div class="site-shell">
+      <div>
+        <a class="brand" href="index.html" aria-label="bleibrente, Startseite"><img src="bleibrente-logo-offene-tuer.svg" width="202" height="38" alt="bleibrente"></a>
+        <p class="footer-tagline">bleibrente bringt Eigentümer und Käufer zusammen. So können Sie nach dem Verkauf in Ihrem Zuhause bleiben, gebundenes Kapital nutzen und auf Wunsch eine lebenslange Sofortrente finanzieren.</p>
+      </div>
+      <nav class="footer-group" aria-labelledby="footer-navigation-title">
+        <h2 id="footer-navigation-title">Navigation</h2>
+        <a href="index.html#so-funktionierts">So funktioniert’s</a>
+        <a href="index.html#ablauf">Der Ablauf</a>
+      </nav>
+      <nav class="footer-group" aria-labelledby="footer-knowledge-title">
+        <h2 id="footer-knowledge-title">Wissen</h2>
+        <a href="immobilienverrentung.html">Immobilienverrentung im Überblick</a>
+        <a href="niessbrauch.html">Nießbrauch erklärt</a>
+        <a href="leibrente-vergleich.html">Leibrente im Vergleich</a>
+        <a href="sofortrente.html">Sofortrente erklärt</a>
+      </nav>
+      <div class="footer-group">
+        <h2>Kontakt</h2>
+        <address><a href="mailto:info@bleibrente.de">info@bleibrente.de</a></address>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

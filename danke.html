@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Danke für Ihre Anfrage | bleibrente</title>
+  <link rel="icon" type="image/svg+xml" href="bleibrente-tuer-symbol.svg">
+  <link rel="stylesheet" href="bleibrente-site.css">
+  <style>
+    :root { color-scheme: light; --ink: #172636; --teal: #195b65; --paper: #f2f7f6; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 1.0625rem/1.6 system-ui, sans-serif; }
+    header > div { width: min(71rem, calc(100% - 2rem)); min-height: 4.5rem; display: flex; align-items: center; margin-inline: auto; }
+    main { width: min(39rem, calc(100% - 2rem)); margin: clamp(.85rem, 4vh, 2.75rem) auto 3rem; padding: clamp(1.5rem, 4vw, 2.75rem); background: #fff; border-radius: .9rem; box-shadow: 0 12px 42px #1726360a; }
+    html.embedded body { background: #fff; }
+    html.embedded body > header { display: none; }
+    html.embedded main { width: 100%; min-height: 0; margin: 0; padding: 1rem clamp(1rem, 4vw, 2.1rem) 1.6rem; box-shadow: none; border-radius: 0; }
+    h1, h2, p { margin: 0; }
+    h1 { margin: 1.2rem 0 .65rem; font-size: clamp(1.9rem, 5vw, 2.5rem); line-height: 1.12; letter-spacing: -.045em; }
+    h2 { margin-top: 1.55rem; font-size: 1.3rem; letter-spacing: -.02em; }
+    p, li { color: #405056; }
+    ol { padding-left: 1.4rem; margin: .6rem 0 1.5rem; }
+    li + li { margin-top: .55rem; }
+    li strong { color: var(--ink); }
+    .back { display: inline-flex; min-height: 48px; align-items: center; gap: .55rem; padding: .6rem .95rem; background: var(--teal); border-radius: .42rem; color: #fff; font-weight: 650; text-decoration: none; }
+    .back:hover { background: #124750; }
+    :focus-visible { outline: 2px solid var(--teal); outline-offset: 4px; }
+    .illustration { display: block; width: 7.75rem; max-width: 100%; height: auto; }
+    @media (max-width: 40rem) {
+      header > div { min-height: 3.75rem; }
+      main { width: 100%; margin: 0; min-height: calc(100svh - 3.75rem); padding: 1.25rem 1rem 2rem; border-radius: 0; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .home { transform-origin: 52px 80px; animation: settle-in .52s ease-out both; }
+      .check-circle { transform-origin: 97px 78px; animation: settle-in .36s .32s cubic-bezier(.25,.8,.45,1.26) both; }
+      .check-mark { stroke-dasharray: 1; animation: draw-mark .42s .53s ease-out both; }
+      @keyframes settle-in {
+        from { opacity: 0; transform: translateY(9px) scale(.9); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+      @keyframes draw-mark { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+    }
+  </style>
+  <script src="rechner-fenster.js" defer></script>
+</head>
+<body>
+  <header><div><a class="brand" href="index.html" aria-label="bleibrente, Startseite"><img src="bleibrente-logo-offene-tuer.svg" width="202" height="38" alt="bleibrente"></a></div></header>
+  <main>
+    <svg class="illustration" viewBox="0 0 128 108" aria-hidden="true" focusable="false">
+      <rect x="0" y="0" width="128" height="108" rx="18" fill="#eaf2ee"/>
+      <g class="home" stroke="#195b65" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M26 50 53 28l27 22v31H26z" fill="#fff"/>
+        <path d="M20 51 53 24l33 27M48 81V63h11v18M35 55h8v9h-8z" fill="none"/>
+      </g>
+      <circle class="check-circle" cx="97" cy="78" r="18" fill="#195b65"/>
+      <path class="check-mark" pathLength="1" d="m89 78 5.5 5.5L105 73" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h1>Danke-Seite in der Vorschau</h1>
+    <p>So sieht die Bestätigung aus. In dieser Vorschau wurde keine Anfrage gesendet.</p>
+    <h2>So geht es nach einer echten Anfrage weiter</h2>
+    <ol>
+      <li><strong>Wir sprechen am Telefon.</strong> Sie erzählen uns von Ihrer Immobilie und klären mit uns Ihre ersten Fragen.</li>
+      <li><strong>Wenn es für Sie passt, vereinbaren wir einen Termin vor Ort.</strong> Wir sehen uns die Immobilie an und bewerten sie.</li>
+      <li><strong>Sie entscheiden über den Verkauf.</strong> Wenn Sie sich dafür entscheiden, bieten wir die Immobilie interessierten Investoren an.</li>
+    </ol>
+    <a class="back" href="index.html" data-close-rechner><span aria-hidden="true">←</span> Zurück zur Website</a>
+  </main>
+  <footer class="site-footer">
+    <div class="site-shell">
+      <div>
+        <a class="brand" href="index.html" aria-label="bleibrente, Startseite"><img src="bleibrente-logo-offene-tuer.svg" width="202" height="38" alt="bleibrente"></a>
+        <p class="footer-tagline">bleibrente bringt Eigentümer und Käufer zusammen. So können Sie nach dem Verkauf in Ihrem Zuhause bleiben, gebundenes Kapital nutzen und auf Wunsch eine lebenslange Sofortrente finanzieren.</p>
+      </div>
+      <nav class="footer-group" aria-labelledby="footer-navigation-title">
+        <h2 id="footer-navigation-title">Navigation</h2>
+        <a href="index.html#so-funktionierts">So funktioniert’s</a>
+        <a href="index.html#ablauf">Der Ablauf</a>
+      </nav>
+      <nav class="footer-group" aria-labelledby="footer-knowledge-title">
+        <h2 id="footer-knowledge-title">Wissen</h2>
+        <a href="immobilienverrentung.html">Immobilienverrentung im Überblick</a>
+        <a href="niessbrauch.html">Nießbrauch erklärt</a>
+        <a href="leibrente-vergleich.html">Leibrente im Vergleich</a>
+        <a href="sofortrente.html">Sofortrente erklärt</a>
+      </nav>
+      <div class="footer-group">
+        <h2>Kontakt</h2>
+        <address><a href="mailto:info@bleibrente.de">info@bleibrente.de</a></address>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

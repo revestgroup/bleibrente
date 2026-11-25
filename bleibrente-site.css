@@ -1,0 +1,170 @@
+:root {
+  color-scheme: light;
+  --ink: #172636;
+  --body: #405056;
+  --teal: #195b65;
+  --paper: #f2f7f6;
+  --line: #d9e3e2;
+}
+
+.site-shell {
+  width: min(71rem, calc(100% - 3rem));
+  margin-inline: auto;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 44px;
+  text-decoration: none;
+}
+
+.brand img {
+  display: block;
+  width: 10rem;
+  max-width: 100%;
+  height: auto;
+}
+
+.site-footer { background: var(--paper); }
+.site-footer .site-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, .8fr) minmax(0, 1.1fr) minmax(0, .9fr);
+  align-items: start;
+  gap: 1.6rem clamp(1.5rem, 4vw, 3.25rem);
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+  border-top: 1px solid var(--line);
+}
+
+.footer-tagline {
+  margin: .7rem 0 0;
+  max-width: 32ch;
+  color: var(--body);
+  font-size: 1rem;
+}
+
+.footer-group { display: grid; justify-items: start; font-size: 1rem; }
+.footer-group h2 { margin: 0 0 .35rem; font-size: 1rem; line-height: 1.45; letter-spacing: normal; }
+.footer-group address { font-style: normal; }
+.footer-group :is(a, [aria-current]) {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding-block: .25rem;
+  color: var(--teal);
+  line-height: 1.35;
+  text-decoration: none;
+  text-underline-offset: .22em;
+  overflow-wrap: anywhere;
+}
+
+.footer-group [aria-current] { font-weight: 650; color: var(--ink); }
+.footer-group a:hover { text-decoration: underline; }
+:is(.brand, .footer-group a, .calculator-cta):focus-visible { outline: 2px solid var(--teal); outline-offset: 4px; }
+
+.contact-section {
+  background: var(--teal);
+  color: #fff;
+  scroll-margin-top: var(--header-height, 1rem);
+}
+.contact-section .site-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.25rem 3rem;
+  padding-block: clamp(2.75rem, 6vw, 5rem);
+}
+
+.contact-section h2 {
+  margin: 0;
+  max-width: 26ch;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 1.15;
+  letter-spacing: -.04em;
+  text-wrap: balance;
+}
+
+.contact-section p { margin: .65rem 0 0; max-width: 52ch; color: #e8f3f2; }
+.calculator-cta {
+  display: inline-flex;
+  justify-self: start;
+  align-items: center;
+  gap: .65rem;
+  min-height: 48px;
+  padding: .55rem 1rem;
+  border-radius: .4rem;
+  background: #fff;
+  color: var(--teal);
+  font-weight: 650;
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+.calculator-cta:hover { background: #e7f1ef; }
+.contact-section .calculator-cta:focus-visible { outline-color: #fff; }
+html.embedded .site-footer { display: none; }
+
+@media (max-width: 57rem) {
+  .site-footer .site-shell { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 48rem) {
+  .contact-section .site-shell { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 40rem) {
+  .site-shell { width: calc(100% - 2rem); }
+}
+
+@media (max-width: 30rem) {
+  .site-footer .site-shell { grid-template-columns: minmax(0, 1fr); }
+}
+
+body:has(.calculator-dialog[open]) { overflow: hidden; }
+.calculator-dialog {
+  width: min(42rem, calc(100% - 1.5rem));
+  max-width: none;
+  max-height: calc(100dvh - 1.5rem);
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: .85rem;
+  overflow: hidden;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 1.4rem 4rem #17263635;
+}
+.calculator-dialog::backdrop { background: #17263686; }
+.calculator-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: .2rem .45rem 0;
+  background: #fff;
+}
+.calculator-dialog-header form { margin: 0; }
+.calculator-dialog-close {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: .4rem;
+  background: transparent;
+  color: var(--ink);
+  font: 1.55rem/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+.calculator-dialog-close:hover { background: #dcecea; }
+.calculator-dialog-close:focus-visible { outline: 2px solid var(--teal); outline-offset: -3px; }
+.calculator-dialog iframe {
+  display: block;
+  width: 100%;
+  height: var(--rechner-height, 35rem);
+  max-height: calc(100dvh - 4.75rem);
+  border: 0;
+  background: #fff;
+}

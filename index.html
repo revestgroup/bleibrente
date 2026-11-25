@@ -1,0 +1,1303 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>bleibrente – Zuhause bleiben. Die Rente ergänzen.</title>
+  <link rel="icon" type="image/svg+xml" href="bleibrente-tuer-symbol.svg">
+  <link rel="stylesheet" href="bleibrente-site.css">
+  <style>
+    :root {
+      color-scheme: light;
+      --header-height: 4.5rem;
+      --ink: #172636;
+      --body: #405056;
+      --teal: #195b65;
+      --green: #236247;
+      --line: #d9e3e2;
+      --paper: #f2f7f6;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #fff;
+      color: var(--ink);
+      font: 1.125rem/1.6 system-ui, sans-serif;
+    }
+
+    .hero-inner, .explanation, .payout {
+      width: min(71rem, calc(100% - 3rem));
+      margin-inline: auto;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    .site-header {
+      position: fixed;
+      z-index: 10;
+      inset: 0 0 auto;
+      background: #fff;
+      transition: box-shadow 220ms ease;
+    }
+
+    .site-header.is-scrolled, .site-header:has(.mobile-nav[open]) {
+      box-shadow: 0 .4rem 1.6rem #1726360d;
+    }
+
+    .site-header .site-shell {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem 2rem;
+      height: var(--header-height);
+      padding-block: .65rem;
+    }
+
+    .site-nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .1rem clamp(.8rem, 2.6vw, 2rem);
+      font-size: 1rem;
+    }
+
+    .site-nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      color: var(--body);
+      text-decoration: none;
+      text-underline-offset: .22em;
+    }
+
+    .site-header:not(.is-scrolled) .desktop-nav a {
+      color: var(--ink);
+    }
+
+    .mobile-nav { display: none; }
+
+    .site-nav a:hover { color: var(--teal); text-decoration: underline; }
+    .brand:focus-visible, .site-nav a:focus-visible {
+      outline: 2px solid var(--teal);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 60rem) {
+      :root { --header-height: 3.75rem; }
+      .site-header .desktop-nav { display: none; }
+      .mobile-nav { display: block; }
+      .mobile-nav summary {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        min-height: 44px;
+        padding: .4rem .65rem;
+        border: 1px solid var(--line);
+        border-radius: .4rem;
+        cursor: pointer;
+        color: var(--ink);
+        font-weight: 650;
+        font-size: 1rem;
+        list-style: none;
+      }
+      .mobile-nav summary::-webkit-details-marker { display: none; }
+      .mobile-nav summary:hover, .mobile-nav[open] summary { background: var(--paper); color: var(--teal); }
+      .mobile-nav summary:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+      .mobile-nav summary svg { width: 1.2rem; height: 1.2rem; }
+      .mobile-nav summary .menu-close, .mobile-nav[open] summary .menu-open { display: none; }
+      .mobile-nav[open] summary .menu-close { display: block; }
+      .mobile-nav .site-nav {
+        position: absolute;
+        inset: 100% max(1.5rem, calc((100% - 71rem) / 2)) auto auto;
+        display: grid;
+        align-content: start;
+        width: min(21rem, calc(100% - 2rem));
+        max-height: calc(100dvh - var(--header-height) - .75rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: .45rem;
+        border: 1px solid var(--line);
+        border-radius: .6rem;
+        background: #fff;
+        box-shadow: 0 .8rem 1.4rem #17263614;
+      }
+      .mobile-nav .site-nav a {
+        width: 100%;
+        min-height: 48px;
+        padding: .45rem .65rem;
+        border-radius: .35rem;
+      }
+      .mobile-nav .site-nav a:focus-visible { outline-offset: -2px; }
+      .mobile-nav .site-nav a:hover { background: var(--paper); }
+      .mobile-nav .site-nav .menu-calculator {
+        justify-content: space-between;
+        gap: .5rem;
+        margin-top: .25rem;
+        background: var(--paper);
+        color: var(--teal);
+        font-weight: 650;
+      }
+    }
+
+    @media (max-width: 40rem) {
+      .mobile-nav .site-nav { right: 1rem; }
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    .hero-media {
+      position: absolute;
+      inset: var(--header-height) 0 0 37%;
+      background: #d7e1e2;
+    }
+
+    .hero-media::after {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, var(--paper) 5%, transparent 47%);
+      content: "";
+      pointer-events: none;
+    }
+
+    .hero-media img {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .hero-inner {
+      display: flex;
+      min-height: clamp(31rem, 66vh, 42rem);
+      align-items: center;
+      padding-block: calc(var(--header-height) + clamp(2.25rem, 5vw, 4rem)) clamp(2.75rem, 5vw, 4rem);
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+      width: min(44%, 30rem);
+      container-type: inline-size;
+    }
+    .hero h1 {
+      font-size: clamp(2.05rem, 11.55cqi, 3.65rem);
+      font-weight: 650;
+      letter-spacing: -.057em;
+      line-height: 1.04;
+    }
+
+    .hero h1 span { display: block; color: var(--teal); }
+    .hero p {
+      max-width: 32ch;
+      margin-top: 1.25rem;
+      color: var(--body);
+      font-size: clamp(1.0625rem, 1.65vw, 1.25rem);
+      line-height: 1.55;
+    }
+
+    .hero-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .65rem;
+      min-height: 48px;
+      margin-top: 1.6rem;
+      padding: .55rem 1rem;
+      border-radius: .4rem;
+      background: var(--teal);
+      color: #fff;
+      font-weight: 650;
+      line-height: 1.35;
+      text-decoration: none;
+    }
+
+    .hero-link:hover { background: #124750; }
+    .hero-link:focus-visible { outline: 2px solid var(--teal); outline-offset: 4px; }
+    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .1rem 1rem; margin-top: 1.6rem; }
+    .hero-actions .hero-link, .hero-actions .text-link { margin: 0; }
+
+    .explanation {
+      margin-top: clamp(3.25rem, 7vw, 6rem);
+      margin-bottom: 4.5rem;
+      scroll-margin-top: calc(var(--header-height) + 1rem);
+    }
+
+    .explanation-title, .payout h2 {
+      max-width: 30ch;
+      font-size: clamp(2rem, 4.5vw, 3.4rem);
+      line-height: 1.12;
+      letter-spacing: -.035em;
+      text-wrap: balance;
+    }
+
+    .step h3 {
+      font-size: clamp(1.55rem, 3vw, 2.25rem);
+      line-height: 1.18;
+      letter-spacing: -.025em;
+      text-wrap: pretty;
+    }
+
+    .intro { margin: .6rem 0 1.25rem; }
+    .intro, .step p { color: var(--body); }
+    .step p { margin-top: .75rem; max-width: 45ch; }
+    .step .example { font-size: 1rem; }
+    .step + .step { margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+
+    .text-link {
+      color: var(--teal);
+      font-weight: 650;
+      text-decoration: underline;
+      text-underline-offset: .22em;
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      gap: .45em;
+      margin-top: .4rem;
+    }
+
+    .text-link:hover { color: #124750; }
+    .text-link:focus-visible {
+      outline: 2px solid var(--teal);
+      outline-offset: 4px;
+    }
+
+    .payout {
+      padding: clamp(3rem, 7vw, 6rem) 0 clamp(3rem, 6vw, 5rem);
+      scroll-margin-top: calc(var(--header-height) + 1rem);
+    }
+    .payout:focus:target { outline: none; }
+    .payout h2 { max-width: 27ch; font-size: clamp(1.9rem, 4vw, 2.8rem); text-wrap: wrap; }
+    .payout-intro { max-width: 55ch; margin: .75rem 0 0; color: var(--body); }
+    .allocation {
+      display: grid;
+      grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+      gap: 1.75rem clamp(1.75rem, 5vw, 4.25rem);
+      align-items: start;
+    }
+    .allocation {
+      --mixed-upfront: 50%;
+      grid-template-areas: "choices figure" "copy figure";
+      grid-template-rows: auto 1fr;
+      row-gap: 1.2rem;
+      margin-top: clamp(1.6rem, 4vw, 2.75rem);
+    }
+    .allocation fieldset { grid-area: choices; min-inline-size: 0; padding: 0; margin: 0; border: 0; }
+    .allocation-info { grid-area: copy; }
+    .allocation legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+    .allocation-choices { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .allocation-choice {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: .45rem .7rem;
+      border-radius: .45rem;
+      background: #f2f4f1;
+      font-size: 1rem;
+      line-height: 1.35;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .allocation-choice input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .allocation-choice:hover { background: #e8efea; }
+    .allocation-choice:has(:checked) { color: #fff; background: var(--teal); }
+    .allocation-choice:has(:focus-visible) { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+    .allocation-view { display: grid; }
+    .allocation-copy { grid-area: 1 / 1; visibility: hidden; max-width: 44ch; }
+    .allocation-copy h3 { font-size: clamp(1.3rem, 2.4vw, 1.7rem); line-height: 1.2; letter-spacing: -.02em; }
+    .allocation-copy p { margin-top: .55rem; color: var(--body); }
+
+    .allocation-figure {
+      --upfront: var(--mixed-upfront);
+      grid-area: figure;
+      margin: 0;
+      padding: clamp(1rem, 3vw, 2.05rem);
+      background: var(--paper);
+      border-radius: .8rem;
+    }
+    .allocation:has(#payout-upfront:checked) .allocation-figure { --upfront: 100%; }
+    .allocation:has(#payout-monthly:checked) .allocation-figure { --upfront: 0%; }
+    .allocation-figure figcaption {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: .7rem;
+      font-size: 1rem;
+      font-weight: 650;
+    }
+    .allocation-figure figcaption span { color: var(--body); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .allocation-bar {
+      height: clamp(1.7rem, 4vw, 2.85rem);
+      margin-top: .65rem;
+      border-radius: .3rem;
+      background: var(--teal);
+      overflow: hidden;
+    }
+    .allocation-bar span { display: block; width: var(--upfront); height: 100%; background: #9bbfbc; }
+    .allocation-shares {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .55rem 1.15rem;
+      margin: .9rem 0 0;
+    }
+    .allocation-share { display: flex; flex-direction: column; align-items: flex-start; }
+    .allocation-share dt { display: flex; align-items: flex-start; gap: .45rem; color: var(--body); font-size: .975rem; line-height: 1.3; }
+    .allocation-share dt::before { content: ""; width: .65rem; height: .65rem; margin-top: .3em; flex: none; border-radius: .12rem; background: #9bbfbc; }
+    .allocation-share:last-child dt::before { background: var(--teal); }
+    .allocation-share dd {
+      order: -1;
+      margin: 0 0 .25rem;
+      font-size: clamp(1.55rem, 3vw, 2.4rem);
+      line-height: 1.15;
+      font-weight: 650;
+      letter-spacing: -.045em;
+      font-variant-numeric: tabular-nums;
+    }
+    .allocation-adjust { margin-top: 1.05rem; font-size: .975rem; }
+    .allocation-adjust label { display: block; font-weight: 650; }
+    .allocation-adjust input { display: block; width: 100%; min-height: 44px; margin: 0; accent-color: var(--teal); cursor: pointer; }
+    .allocation-adjust input:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+    .allocation-note { color: var(--body); font-size: .95rem; line-height: 1.45; }
+    .allocation-figure > .allocation-note { margin-top: .95rem; }
+    .allocation [data-pay-show] { display: none; }
+
+    .allocation:has(#payout-upfront:checked) .copy-upfront,
+    .allocation:has(#payout-mixed:checked) .copy-mixed,
+    .allocation:has(#payout-monthly:checked) .copy-monthly { visibility: visible; }
+    .allocation:has(#payout-upfront:checked) [data-pay-show="upfront"],
+    .allocation:has(#payout-mixed:checked) [data-pay-show="mixed"],
+    .allocation:has(#payout-monthly:checked) [data-pay-show="monthly"] { display: revert; }
+    .allocation-adjust [hidden] { display: none; }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .allocation-bar span { transition: width .32s ease; }
+    }
+    .payout-links { display: flex; flex-wrap: wrap; gap: 0 1.5rem; margin-top: clamp(1rem, 3vw, 1.75rem); }
+    .payout-links .text-link { margin-top: 0; }
+    @media (max-width: 60rem) {
+      .allocation { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); }
+      .allocation-choices { gap: .4rem; }
+      .allocation-choice { padding-inline: .45rem; font-size: .975rem; }
+    }
+    @media (max-width: 50rem) {
+      .allocation { grid-template-columns: minmax(0, 1fr); grid-template-areas: "choices" "figure" "copy"; grid-template-rows: auto; }
+    }
+
+    .family-sale {
+      background: #e7f1ef;
+      scroll-margin-top: var(--header-height);
+    }
+    .family-sale .site-shell {
+      padding-block: clamp(2.5rem, 6vw, 4.75rem);
+    }
+    .family-intro {
+      display: grid;
+      grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr);
+      gap: .8rem clamp(1.5rem, 6vw, 5.75rem);
+      align-items: start;
+    }
+    .family-sale h2 {
+      max-width: 21ch;
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      letter-spacing: -.035em;
+      line-height: 1.12;
+    }
+    .family-intro p { max-width: 50ch; color: var(--body); }
+    .family-questions { margin: 1.65rem 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; }
+    .family-questions > div { padding: clamp(1rem, 2.6vw, 1.6rem); background: #fff; border: 1px solid var(--line); border-radius: .65rem; }
+    .family-questions dt { font-size: 1.125rem; font-weight: 700; line-height: 1.35; }
+    .family-questions dd { margin: .5rem 0 0; color: var(--body); font-size: 1.035rem; }
+    .family-questions svg { display: block; width: 2.45rem; height: 2.45rem; margin-bottom: .75rem; padding: .5rem; background: var(--paper); border-radius: .4rem; color: var(--teal); }
+    .family-questions:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+    .family-controls { display: flex; align-items: center; justify-content: space-between; gap: .65rem; margin-top: .65rem; }
+    .family-controls[hidden] { display: none; }
+    .family-controls p { color: var(--body); font-size: .95rem; }
+    .family-controls div { display: flex; gap: .45rem; }
+    .family-controls button { width: 44px; height: 44px; border: 1px solid #a9c7c4; border-radius: 50%; background: #fff; color: var(--teal); font: 650 1.25rem/1 system-ui, sans-serif; cursor: pointer; }
+    .family-controls button[aria-disabled="true"] { opacity: .55; cursor: default; }
+    .family-controls button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+    .family-controls button:not([aria-disabled="true"]):hover { background: var(--teal); color: #fff; }
+    @media (max-width: 48rem) {
+      .family-intro { grid-template-columns: minmax(0, 1fr); }
+      .family-questions {
+        grid-template-columns: none;
+        grid-auto-flow: column;
+        grid-auto-columns: clamp(55%, 82%, 22rem);
+        gap: .7rem;
+        margin-top: 1.15rem;
+        padding-bottom: .4rem;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: thin;
+        scrollbar-color: #a9c7c4 transparent;
+      }
+      .family-questions > div { scroll-snap-align: start; }
+    }
+    @media (max-width: 48rem) and (prefers-reduced-motion: no-preference) {
+      .family-questions { scroll-behavior: smooth; }
+    }
+
+    .regional {
+      width: min(71rem, calc(100% - 3rem));
+      margin-inline: auto;
+      scroll-margin-top: calc(var(--header-height) + 1rem);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+      grid-template-areas: "copy map";
+      gap: clamp(1.8rem, 4.5vw, 4rem);
+      align-items: start;
+      padding: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(3.25rem, 7vw, 6rem);
+    }
+
+    .regional-copy { grid-area: copy; }
+    .regional:focus { outline: none; }
+    .regional:focus-visible h2 { outline: 2px solid var(--teal); outline-offset: .25rem; border-radius: .15rem; width: fit-content; }
+    .regional h2 {
+      max-width: 18ch;
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      line-height: 1.12;
+      letter-spacing: -.035em;
+      text-wrap: balance;
+    }
+
+    .regional-copy p { max-width: 45ch; margin-top: .85rem; color: var(--body); }
+    .regional-map { grid-area: map; margin: 0; padding: .75rem 0; }
+    .region-map { width: 100%; max-width: 34rem; height: auto; display: block; margin: 0 auto; }
+    .regional-map figcaption { color: var(--body); font-size: .825rem; text-align: center; }
+    .regional-map a { color: inherit; text-underline-offset: .15em; }
+
+    .regional-points { margin: 1.65rem 0 .5rem; }
+    .regional-points div + div { margin-top: 1.1rem; }
+    .regional-points dt { font-weight: 650; line-height: 1.4; }
+    .regional-points dd { margin: .25rem 0 0; color: var(--body); }
+
+    .process {
+      width: min(71rem, calc(100% - 3rem));
+      margin: 0 auto;
+      padding: clamp(2rem, 5vw, 4rem) 0 clamp(4rem, 8vw, 7rem);
+      scroll-margin-top: calc(var(--header-height) + 1rem);
+    }
+    .process h2 { font-size: clamp(1.9rem, 4vw, 2.8rem); letter-spacing: -.035em; line-height: 1.12; }
+    .process-intro { max-width: 54ch; margin-top: .7rem; color: var(--body); }
+    .process ol {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(1.65rem, 4vw, 3rem);
+      margin: clamp(2rem, 5vw, 3.5rem) 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .process-drawing { display: block; width: min(100%, 15rem); height: auto; margin-bottom: 1rem; }
+    .process h3 { font-size: 1.25rem; line-height: 1.3; }
+    .process li p { margin-top: .55rem; color: var(--body); }
+    .process-proof { max-width: 61ch; margin-top: clamp(2.25rem, 5vw, 4rem); }
+    .process-proof p { margin-top: .55rem; color: var(--body); }
+
+    @media (max-width: 52rem) {
+      .process ol { grid-template-columns: 1fr; gap: 2.25rem; }
+      .process li { max-width: 58ch; }
+      .process-drawing { width: min(100%, 11rem); margin-bottom: .65rem; }
+    }
+
+    .illustration { display: block; width: 100%; max-width: 37rem; height: auto; margin: 0 auto; }
+    .mobile-diagram { display: none; margin: 0 0 1rem; }
+    .has-diagrams .mobile-diagram { display: block; }
+    .mobile-diagram .role-labels { display: none; }
+    .mobile-diagram figcaption { max-width: 37rem; margin: 0 auto; }
+    .mobile-roles {
+      display: grid;
+      grid-template-columns: 2fr 1fr 2fr;
+      text-align: center;
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+    .mobile-roles span { grid-column: 1; color: var(--teal); }
+    .mobile-roles strong,
+    .mobile-roles span strong { display: block; }
+    .mobile-roles > strong { grid-column: 3; }
+    .has-diagrams .mobile-diagram.mobile-income {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      align-items: center;
+      gap: .35rem .9rem;
+      max-width: 30rem;
+    }
+    .mobile-income .illustration { grid-column: 1; grid-row: 1; }
+    .mobile-income figcaption { grid-column: 2; grid-row: 1; margin: 0; font-size: 1rem; line-height: 1.35; }
+    .mobile-income strong { display: block; color: var(--green); font-size: clamp(1.5rem, 6vw, 2.125rem); }
+    .mobile-income .mobile-stay { grid-column: 1 / -1; margin: 0; color: var(--teal); font-weight: 650; }
+    .has-diagrams:not(.enhanced) .example strong {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .desktop-diagram, .controls, .scroll-track { display: none; }
+    .motion-hint { display: none; }
+
+    .house { transform-origin: 253px 186px; }
+    .resident { transform-origin: 100px 198px; }
+    .facade { fill: #f4f7f5; }
+    .roof { fill: #e2ece8; }
+    .window { fill: #fff; }
+    .door { fill: #e2ece8; }
+    .ground { opacity: .7; }
+    .buyer, .living-right, .income-visual, .home-label, .sale-outline { opacity: 0; }
+    .ownership-badge { transform: translateX(0); }
+
+    [data-scene="0"] .home-label { opacity: 1; }
+    [data-scene="1"] .buyer,
+    [data-scene="2"] .buyer,
+    [data-scene="1"] .sale-outline,
+    [data-scene="2"] .living-right,
+    [data-scene="3"] .income-visual { opacity: 1; }
+    [data-scene="1"] .facade { fill: #d8ebe8; }
+    [data-scene="1"] .roof { fill: #bad8d3; }
+    [data-scene="1"] .ownership-badge,
+    [data-scene="2"] .ownership-badge { transform: translateX(305px); }
+    [data-scene="2"] .door,
+    [data-scene="2"] .window { fill: #f7e8bf; }
+    [data-scene="3"] .ownership-badge { opacity: 0; transform: translateX(305px); }
+    [data-scene="3"] .house { transform: translate(-119px, -12px) scale(.63); }
+    [data-scene="3"] .resident { transform: translate(122px, 10px) scale(1.65); }
+    [data-scene="3"] :is(.ground, .you-label) { opacity: 0; }
+
+    .stage-heading { margin-bottom: 1.25rem; }
+    .enhanced .explanation { scroll-margin-top: var(--header-height); }
+    .enhanced .stage-heading { grid-column: 1 / -1; margin-bottom: 0; }
+    .enhanced .motion-hint { display: block; margin-bottom: 0; }
+    .enhanced .scroll-sequence { --stride: clamp(15rem, 44vh, 25rem); }
+    .enhanced .stage {
+      position: sticky;
+      top: var(--header-height);
+      min-height: calc(100vh - var(--header-height));
+      min-height: calc(100svh - var(--header-height));
+      display: grid;
+      grid-template-columns: minmax(0, 1.24fr) minmax(0, 1fr);
+      column-gap: clamp(2rem, 5vw, 4.5rem);
+      row-gap: clamp(.8rem, 3vh, 1.75rem);
+      align-content: center;
+      align-items: start;
+      padding-block: clamp(1rem, 3vh, 2rem);
+      background: #fff;
+    }
+
+    .enhanced .scroll-track { display: block; height: calc(var(--stride) * 3); }
+    .enhanced .scroll-sequence::after {
+      content: "";
+      display: block;
+      height: var(--stride);
+    }
+    .enhanced .desktop-diagram { display: block; }
+    .enhanced.has-diagrams :is(.mobile-diagram, .mobile-diagram.mobile-income) { display: none; }
+    .enhanced .steps { display: grid; align-items: start; }
+    .enhanced .step {
+      grid-area: 1 / 1;
+      visibility: hidden;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .enhanced .step.active {
+      visibility: visible;
+      animation: reveal-text 310ms ease-out both;
+    }
+
+    .enhanced .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      column-gap: .65rem;
+      row-gap: .5rem;
+      margin-top: 1.8rem;
+    }
+
+    .controls button {
+      min-height: 44px;
+      padding: .45rem .85rem;
+      border: 1px solid #9aaeb0;
+      border-radius: .35rem;
+      background: #fff;
+      color: var(--teal);
+      font: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .controls button[aria-disabled="true"] { color: #637177; border-color: var(--line); cursor: default; }
+    .controls button:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+    .counter { color: var(--body); font-size: .95rem; white-space: nowrap; }
+
+    .enhanced .desktop-diagram :is(.house, .resident, .ownership-badge) {
+      transition: transform 620ms cubic-bezier(.25, .7, .25, 1), opacity 325ms ease;
+    }
+
+    .enhanced .desktop-diagram :is(.buyer, .living-right, .income-visual, .home-label, .sale-outline, .ground) {
+      transition: opacity 325ms ease;
+    }
+
+    .enhanced .desktop-diagram[data-scene="3"] .income-visual { transition-delay: 220ms; }
+    .enhanced .desktop-diagram :is(.facade, .roof, .door, .window) { transition: fill 415ms ease; }
+
+    @keyframes reveal-text {
+      from { opacity: 0; transform: translateY(7px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 52rem) {
+      .enhanced .scroll-sequence { --stride: clamp(9rem, 30svh, 14rem); }
+      .enhanced .stage {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: clamp(.45rem, 1.65svh, 1rem);
+        padding-block: .65rem;
+      }
+
+      .enhanced .explanation-title { font-size: clamp(1.5rem, 5.4vw, 2.05rem); }
+      .enhanced .motion-hint { display: none; }
+      .enhanced .desktop-diagram .illustration { max-height: clamp(7.25rem, 25svh, 13rem); }
+      .enhanced .desktop-diagram .ownership-badge text { font-size: 21px; }
+      .enhanced .step h3 { font-size: clamp(1.2rem, 4.5vw, 1.6rem); }
+      .enhanced .step p { margin-top: .45rem; font-size: 1rem; line-height: 1.45; }
+      .enhanced .controls { margin-top: .65rem; }
+      .enhanced .step .text-link { margin-top: .15rem; font-size: 1rem; }
+    }
+
+    @media (max-width: 48rem) {
+      .hero-inner {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "image" "copy";
+        min-height: 0;
+        gap: .75rem;
+        padding-block: var(--header-height) 2.5rem;
+      }
+      .hero-copy { grid-area: copy; width: 100%; }
+      .hero-media {
+        position: relative;
+        inset: auto;
+        grid-area: image;
+        width: calc(100% + 3rem);
+        margin-inline: -1.5rem;
+        aspect-ratio: 16 / 9;
+      }
+      .hero-media::after {
+        background: linear-gradient(180deg, transparent 79%, var(--paper));
+      }
+      .hero h1 { font-size: clamp(2.15rem, 8.1vw, 3.6rem); }
+      .hero p { margin-top: .9rem; max-width: 38ch; }
+      .hero-actions { margin-top: 1.15rem; }
+      .regional {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "intro" "map" "points";
+        gap: 1.2rem;
+      }
+      .regional-copy { display: contents; }
+      .regional-intro { grid-area: intro; }
+      .regional-map { justify-self: start; width: min(100%, 34rem); padding: .6rem .65rem .8rem; border: 1px solid var(--line); border-radius: .65rem; background: var(--paper); }
+      .regional-map .region-map { max-height: 19rem; }
+      .regional-points { grid-area: points; margin: 0; }
+      .regional-points > div { border-top: 1px solid var(--line); padding-top: .8rem; }
+    }
+
+    @media (max-width: 40rem) {
+      .hero-inner, .explanation, .payout, .regional, .process { width: calc(100% - 2rem); }
+      .hero-media { width: calc(100% + 2rem); margin-inline: -1rem; }
+      .intro { margin-bottom: 1.5rem; }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      html { scroll-behavior: smooth; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body id="seitenanfang">
+  <template id="diagram-template">
+    <svg class="illustration" viewBox="0 0 520 276" aria-hidden="true" focusable="false" font-family="system-ui, sans-serif">
+      <path class="ground" d="M63 200H458" fill="none" stroke="#d9e3e2" stroke-width="1.5" stroke-linecap="round"/>
+      <g class="house" stroke="#195b65" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">
+        <path class="sale-outline" d="M139 119 253 30l114 89h-15v87H154v-87Z" fill="none" stroke="#70a8a0" stroke-width="2"/>
+        <path class="facade" d="M161 119 253 48l92 71v81H161Z"/>
+        <path class="roof" d="m148 121 105-81 105 81h-16l-89-68-89 68Z"/>
+        <path class="window" d="M185 132h46v35h-46Z"/>
+        <path d="M208 132v35m-23-17h46" fill="none"/>
+        <path class="door" d="M267 200v-70h42v70Z"/>
+        <path d="M297 164h4" fill="none"/>
+        <path d="M158 200h191" fill="none"/>
+      </g>
+
+      <g class="resident">
+        <circle cx="100" cy="145" r="9" fill="#195b65"/>
+        <path d="M85 178v-8a15 15 0 0 1 30 0v8m-23-4v24m16-24v24m-16-14h16"
+              fill="none" stroke="#195b65" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+
+      <g class="buyer">
+        <circle cx="405" cy="145" r="9" fill="#455760"/>
+        <path d="M390 178v-8a15 15 0 0 1 30 0v8m-23-4v24m16-24v24m-16-14h16"
+              fill="none" stroke="#455760" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+
+      <g class="ownership-badge role-labels">
+        <rect x="35" y="211" width="130" height="34" rx="17" fill="#195b65"/>
+        <text x="100" y="234" text-anchor="middle" font-size="18" font-weight="650" fill="#fff">Eigentümer</text>
+      </g>
+
+      <text class="home-label role-labels" x="253" y="234" text-anchor="middle" font-size="21" fill="#405056">Ihr Zuhause</text>
+      <text x="100" y="128" text-anchor="middle" font-size="21" font-weight="650" fill="#195b65" class="you-label role-labels">Sie</text>
+
+      <g class="living-right">
+        <circle cx="290" cy="151" r="5" fill="none" stroke="#735821" stroke-width="2"/>
+        <path d="M287 155l-7 8m3-3 3 2" fill="none" stroke="#735821" stroke-width="2" stroke-linecap="round"/>
+        <text class="role-labels" x="100" y="227" text-anchor="middle" font-size="19" font-weight="650" fill="#195b65">
+          <tspan x="100">Sie bleiben hier</tspan>
+          <tspan x="100" dy="23">auf Lebenszeit</tspan>
+        </text>
+      </g>
+
+      <g class="income-visual role-labels">
+        <text x="287" y="131" font-size="18" font-weight="600" fill="#405056">Sofortrente · Beispiel</text>
+        <text x="285" y="171" font-size="39" font-weight="700" fill="#236247">+ 1.000 €</text>
+        <text x="288" y="199" font-size="22" fill="#236247">im Monat</text>
+        <text x="47" y="243" font-size="20" font-weight="650" fill="#195b65">Sie wohnen hier weiter. Ein Leben lang.</text>
+      </g>
+    </svg>
+  </template>
+
+  <header class="site-header">
+    <div class="site-shell">
+      <a class="brand" href="#seitenanfang" aria-label="bleibrente, Seitenanfang"><img src="bleibrente-logo-offene-tuer.svg" width="202" height="38" alt="bleibrente"></a>
+      <nav class="site-nav desktop-nav" aria-label="Hauptnavigation">
+        <a href="#so-funktionierts">So funktioniert’s</a>
+        <a href="#auszahlung">Auszahlung</a>
+        <a href="#warum-bleibrente">Warum bleibrente?</a>
+        <a href="#ablauf">Der Ablauf</a>
+        <a href="immobilienrechner.html" data-open-rechner>Rechner</a>
+      </nav>
+      <details class="mobile-nav">
+        <summary>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <path class="menu-open" d="M4 6h16M4 12h16M4 18h16"/>
+            <path class="menu-close" d="m6 6 12 12M18 6 6 18"/>
+          </svg>
+          Menü
+        </summary>
+        <nav class="site-nav" aria-label="Hauptnavigation">
+          <a href="#so-funktionierts">So funktioniert’s</a>
+          <a href="#auszahlung">Auszahlung</a>
+          <a href="#warum-bleibrente">Warum bleibrente?</a>
+          <a href="#ablauf">Der Ablauf</a>
+          <a class="menu-calculator" href="immobilienrechner.html" data-open-rechner>Immobilienrechner starten <span aria-hidden="true">→</span></a>
+        </nav>
+      </details>
+    </div>
+  </header>
+  <main>
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <h1>Zuhause bleiben. <span>Die Rente ergänzen.</span></h1>
+          <p>Mit bleibrente verkaufen Sie Ihr Haus oder Ihre Wohnung mit lebenslangem Nießbrauch. Aus dem Verkaufserlös können Sie eine monatliche Sofortrente finanzieren.</p>
+          <div class="hero-actions">
+            <a class="hero-link" href="immobilienrechner.html" data-open-rechner>Immobilienrechner starten <span aria-hidden="true">→</span></a>
+            <a class="text-link" href="#warum-bleibrente">Warum bleibrente? <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+        <div class="hero-media">
+          <img src="bleibrente-hero-schluessel-hausmodell.webp" alt="Eine Hand hält einen Schlüssel, die andere ein kleines Hausmodell." width="1536" height="864" fetchpriority="high">
+        </div>
+      </div>
+    </header>
+
+    <div class="explanation" id="so-funktionierts">
+      <section class="scroll-sequence" aria-labelledby="explanation-title">
+        <div class="stage">
+          <header class="stage-heading">
+            <h2 class="explanation-title" id="explanation-title">Wie kann ich verkaufen und trotzdem hier wohnen bleiben?</h2>
+            <p class="intro motion-hint">Scrollen Sie weiter oder wählen Sie „Weiter“.</p>
+          </header>
+          <div class="desktop-diagram" data-scene="0"></div>
+          <div>
+            <div class="steps">
+              <article class="step">
+                <figure class="mobile-diagram" data-scene="0" aria-hidden="true">
+                  <figcaption class="mobile-roles"><span>Sie <strong>Eigentümer</strong></span></figcaption>
+                </figure>
+                <h3>Vermögen im eigenen Zuhause</h3>
+                <p>In Ihrem Haus oder Ihrer Wohnung steckt Vermögen. Gleichzeitig kann das Geld im Alltag knapp sein. Mit bleibrente können Sie einen Teil dieses Vermögens nutzen und in Ihrem Zuhause bleiben.</p>
+              </article>
+
+              <article class="step">
+                <figure class="mobile-diagram" data-scene="1" aria-hidden="true">
+                  <figcaption class="mobile-roles"><span>Sie</span><strong>Eigentümer</strong></figcaption>
+                </figure>
+                <h3>Der Verkauf Ihrer Immobilie</h3>
+                <p>Der Käufer wird Eigentümer der Immobilie und zahlt Ihnen den Kaufpreis. Bei der Berechnung wird der Wert des lebenslangen Nießbrauchs abgezogen.</p>
+              </article>
+
+              <article class="step">
+                <figure class="mobile-diagram" data-scene="2" aria-hidden="true">
+                  <figcaption class="mobile-roles"><span><strong>Sie bleiben hier</strong> auf Lebenszeit</span><strong>Eigentümer</strong></figcaption>
+                </figure>
+                <h3>Lebenslang zu Hause bleiben</h3>
+                <p>Der lebenslange Nießbrauch wird im Grundbuch eingetragen. Damit können Sie auch nach dem Verkauf in Ihrem Zuhause wohnen bleiben.</p>
+                <a class="text-link" href="niessbrauch.html">Nießbrauch einfach erklärt <span aria-hidden="true">→</span></a>
+              </article>
+
+              <article class="step">
+                <figure class="mobile-diagram mobile-income" data-scene="3" aria-hidden="true">
+                  <figcaption>Sofortrente im Beispiel <strong>+ 1.000 €</strong> im Monat</figcaption>
+                  <p class="mobile-stay">Sie wohnen hier weiter. Ein Leben lang.</p>
+                </figure>
+                <h3>Mehr Spielraum durch eine Sofortrente</h3>
+                <p>Auf Wunsch fließt ein Teil oder der gesamte Verkaufserlös in eine Sofortrente. Der Lebensversicherer zahlt Ihnen dann ein Leben lang jeden Monat eine zusätzliche Rente.</p>
+                <p class="example"><strong>Fiktives Beispiel: + 1.000 € im Monat.</strong> Die tatsächliche Höhe hängt vom eingesetzten Betrag und vom Versicherungsangebot ab.</p>
+              </article>
+            </div>
+
+            <div class="controls" role="group" aria-label="Schritt auswählen">
+              <button type="button" data-back aria-disabled="true">Zurück</button>
+              <button type="button" data-next>Weiter</button>
+              <span class="counter">1 von 4</span>
+            </div>
+          </div>
+        </div>
+        <div class="scroll-track" aria-hidden="true"></div>
+      </section>
+    </div>
+
+    <section class="payout" id="auszahlung" aria-labelledby="payout-title" tabindex="-1">
+      <h2 id="payout-title">Einmal auszahlen oder jeden Monat?</h2>
+      <p class="payout-intro">Der Erlös kann sofort zur Verfügung stehen, eine monatliche Sofortrente finanzieren oder beides ermöglichen.</p>
+
+      <div class="allocation">
+        <fieldset>
+          <legend>Auszahlungswege vergleichen</legend>
+          <div class="allocation-choices">
+            <label class="allocation-choice">
+              <input type="radio" name="payout-choice" id="payout-upfront" aria-describedby="copy-upfront">
+              Einmalzahlung
+            </label>
+            <label class="allocation-choice">
+              <input type="radio" name="payout-choice" id="payout-mixed" aria-describedby="copy-mixed" checked>
+              Kombinieren
+            </label>
+            <label class="allocation-choice">
+              <input type="radio" name="payout-choice" id="payout-monthly" aria-describedby="copy-monthly">
+              Sofortrente
+            </label>
+          </div>
+        </fieldset>
+
+        <figure class="allocation-figure">
+          <figcaption>Ihr Verkaufserlös <span>100&nbsp;%</span></figcaption>
+          <div class="allocation-bar" aria-hidden="true"><span></span></div>
+          <dl class="allocation-shares">
+            <div class="allocation-share">
+              <dt>Als Einmalzahlung</dt>
+              <dd>
+                <span data-pay-show="upfront">100&nbsp;%</span>
+                <span data-pay-show="mixed" id="payout-upfront-share">50&nbsp;%</span>
+                <span data-pay-show="monthly">0&nbsp;%</span>
+              </dd>
+            </div>
+            <div class="allocation-share">
+              <dt>Für die Sofortrente</dt>
+              <dd>
+                <span data-pay-show="upfront">0&nbsp;%</span>
+                <span data-pay-show="mixed" id="payout-monthly-share">50&nbsp;%</span>
+                <span data-pay-show="monthly">100&nbsp;%</span>
+              </dd>
+            </div>
+          </dl>
+          <div class="allocation-adjust" data-pay-show="mixed">
+            <div id="payout-adjuster" hidden>
+              <label for="payout-monthly-percent">Anteil für die Sofortrente einstellen</label>
+              <input type="range" id="payout-monthly-percent" min="5" max="95" value="50" step="5" aria-describedby="payout-example-note">
+            </div>
+            <p class="allocation-note" id="payout-example-note">Beispiel für die Aufteilung des Verkaufserlöses.</p>
+          </div>
+          <p class="allocation-note" data-pay-show="monthly">Der gesamte Erlös fließt in den Versicherungsvertrag. Wie hoch die Monatsrente ausfällt, hängt vom gewählten Tarif ab.</p>
+        </figure>
+        <div class="allocation-info">
+          <div class="allocation-view">
+            <div class="allocation-copy copy-upfront">
+              <h3>Den Erlös auf einmal erhalten</h3>
+              <p id="copy-upfront">Der gesamte Erlös steht Ihnen als Einmalzahlung zur Verfügung, etwa als Rücklage oder für größere Ausgaben.</p>
+            </div>
+            <div class="allocation-copy copy-mixed">
+              <h3>Einmalzahlung und Rente kombinieren</h3>
+              <p id="copy-mixed">Einen Teil behalten Sie als Einmalzahlung. Mit dem anderen Teil finanzieren Sie eine lebenslange Sofortrente. Die Aufteilung wählen Sie selbst.</p>
+            </div>
+            <div class="allocation-copy copy-monthly">
+              <h3>Monat für Monat mehr Spielraum</h3>
+              <p id="copy-monthly">Sie setzen den gesamten Erlös für eine Sofortrente ein. Ein Lebensversicherer zahlt Ihnen dafür lebenslang jeden Monat eine zusätzliche Rente.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="payout-links" aria-label="Weiterführende Informationen zur Auszahlung">
+        <a class="text-link" href="sofortrente.html">Sofortrente einfach erklärt <span aria-hidden="true">→</span></a>
+      </nav>
+    </section>
+
+    <section class="family-sale" id="familienverkauf" aria-labelledby="family-title">
+      <div class="site-shell">
+        <div class="family-intro">
+          <h2 id="family-title">An Kinder oder Enkel verkaufen</h2>
+          <p>Wenn Ihre Kinder oder Enkel kaufen, bleibt die Immobilie in der Familie. Mit einem lebenslangen Nießbrauch, den Sie beim Verkauf im Grundbuch sichern lassen, können Sie weiterhin dort wohnen.</p>
+        </div>
+        <dl class="family-questions" id="family-questions" aria-label="Fragen zum Familienverkauf">
+          <div>
+            <dt>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 5.5a6 6 0 1 0 0 13M5 10h10M5 14h9"/></svg>
+              Was ist ein passender Kaufpreis?
+            </dt>
+            <dd>Eine Immobilienbewertung gibt Ihnen eine Grundlage für das Gespräch in der Familie. Dabei wird berücksichtigt, wie sich der vorbehaltene Nießbrauch auf den möglichen Kaufpreis auswirkt.</dd>
+          </div>
+          <div>
+            <dt>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8 9-5 9 5H3Zm2 12h14M7 10v7m5-7v7m5-7v7"/></svg>
+              Wie lässt sich der Kauf finanzieren?
+            </dt>
+            <dd>Falls Ihre Angehörigen ein Darlehen brauchen, klären sie mit der Bank, welche Finanzierung mit dem geplanten Nießbrauch infrage kommt.</dd>
+          </div>
+          <div>
+            <dt>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h4m-9 4h6m-6 4h6"/></svg>
+              Was gehört in den Kaufvertrag?
+            </dt>
+            <dd>Besprechen Sie frühzeitig, wer welche laufenden Kosten und Reparaturen übernimmt. Der Notar beurkundet den Verkauf. Das vereinbarte Nutzungsrecht wird im Grundbuch eingetragen.</dd>
+          </div>
+        </dl>
+        <div class="family-controls" hidden>
+          <p aria-live="polite">1 von 3</p>
+          <div>
+            <button type="button" data-family-prev aria-controls="family-questions" aria-label="Vorherige Frage" aria-disabled="true">←</button>
+            <button type="button" data-family-next aria-controls="family-questions" aria-label="Nächste Frage">→</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="regional" id="warum-bleibrente" aria-labelledby="regional-title" tabindex="-1">
+      <div class="regional-copy">
+        <div class="regional-intro">
+          <h2 id="regional-title">Warum bleibrente?</h2>
+          <p>Ein Immobilienverkauf mit lebenslangem Nießbrauch wirft viele Fragen auf. Bei bleibrente haben Sie eine Anlaufstelle für die Bewertung, den Verkauf und die Frage, wie Sie den Erlös nutzen möchten.</p>
+        </div>
+        <dl class="regional-points">
+          <div>
+            <dt>Persönlich erreichbar und regional verbunden</dt>
+            <dd>Ihre Anfrage kommt zuerst bei bleibrente an. Unser Schwerpunkt liegt in Baden-Württemberg und Bayern. Wenn ein passender regionaler Partner verfügbar ist, stellen wir nach Rücksprache den Kontakt her.</dd>
+          </div>
+          <div>
+            <dt>Bewertung und Käufersuche abgestimmt</dt>
+            <dd>Die Bewertung vor Ort gibt Ihnen eine Grundlage für die Entscheidung. Wenn Sie verkaufen möchten, wird die Immobilie interessierten Investoren angeboten. Das lebenslange Nießbrauchrecht wird dabei von Anfang an berücksichtigt.</dd>
+          </div>
+          <div>
+            <dt>Klarheit vor dem Notartermin</dt>
+            <dd>Vor dem Verkauf wird besprochen, was im Kaufvertrag und im Grundbuch geregelt werden soll. Wenn eine Sofortrente für Sie infrage kommt, unterstützt bleibrente Sie dabei, die Konditionen der Angebote zu vergleichen.</dd>
+          </div>
+        </dl>
+      </div>
+
+      <figure class="regional-map">
+          <svg class="region-map" viewBox="0 0 610 492" role="img" aria-labelledby="region-map-title">
+            <title id="region-map-title">Regionaler Schwerpunkt in Baden-Württemberg und Bayern</title>
+            <g stroke="#fff" stroke-width="3" stroke-linejoin="round" fill-rule="evenodd">
+              <path fill="#dfece6" d="M130.1 408.7L131.6 412.0L129.1 411.4L126.7 412.6L127.9 411.0L126.8 409.0ZM213.1 132.4L212.1 136.6L212.8 138.9L211.3 139.5L212.4 140.7L211.1 143.3L211.7 144.7L213.6 145.5L215.5 144.7L215.6 141.6L217.6 141.5L218.4 140.1L220.0 145.3L225.6 139.5L229.0 143.1L229.8 146.1L228.2 148.3L229.3 150.8L231.1 151.4L232.7 155.6L229.9 157.6L230.5 160.0L227.3 162.7L231.6 164.1L233.0 159.8L236.1 158.8L234.9 161.9L237.3 162.2L236.4 171.1L237.5 172.2L245.5 172.0L246.3 169.6L248.7 168.1L247.3 166.2L249.1 164.0L251.2 164.4L251.2 168.5L254.4 168.5L252.6 171.1L254.6 174.8L253.1 174.9L252.2 177.0L255.6 178.4L257.2 181.6L257.3 183.1L256.1 182.9L258.1 183.9L253.4 186.2L255.0 189.2L253.5 189.8L253.3 191.6L253.8 192.8L256.6 193.6L255.8 196.6L257.9 199.2L256.0 201.7L255.1 200.0L253.9 202.2L255.9 202.9L254.8 203.7L256.6 208.8L255.4 208.5L255.3 210.0L258.1 210.9L259.0 212.7L260.3 212.3L261.7 215.8L263.6 214.7L266.2 216.6L267.0 219.3L264.2 220.6L262.5 223.5L266.5 224.1L265.1 226.3L267.8 228.3L266.8 231.3L270.5 230.7L272.8 233.0L275.4 232.6L275.7 235.6L281.0 239.1L280.3 240.7L281.6 240.4L285.1 246.8L282.0 248.8L284.5 250.5L285.0 254.8L282.7 257.2L284.6 258.8L284.6 261.3L282.2 263.0L283.4 266.1L281.6 266.7L283.0 268.8L281.9 269.9L284.8 272.5L286.2 271.5L285.5 272.3L287.9 275.1L286.9 275.8L289.0 277.8L285.0 280.9L281.6 281.5L283.0 279.9L282.6 277.5L283.9 277.2L281.4 276.4L279.7 280.7L277.3 282.6L275.1 277.9L273.4 278.7L269.0 276.0L268.3 282.5L274.0 288.5L271.7 289.3L271.4 291.2L273.2 294.2L272.2 297.1L273.2 300.0L266.1 301.8L267.1 304.3L261.6 306.6L261.0 308.9L257.6 309.4L255.0 306.4L251.4 309.3L248.7 309.1L248.2 311.9L249.5 312.9L242.9 320.3L243.9 321.9L244.8 320.8L245.8 321.8L245.7 323.9L251.9 332.6L251.5 338.1L253.6 342.2L255.8 352.5L258.9 356.8L258.5 367.7L256.8 373.2L254.2 375.3L256.6 378.8L255.3 385.4L256.2 386.2L253.6 387.8L254.2 389.4L256.1 388.1L255.0 390.7L256.4 389.7L256.0 391.1L259.2 395.4L257.2 395.3L257.3 396.7L254.9 396.3L252.7 398.7L257.6 402.1L257.5 407.5L259.6 409.6L258.7 413.3L257.1 414.6L255.1 413.7L254.1 418.2L252.4 412.8L249.8 413.6L249.6 411.9L247.2 412.6L243.5 416.6L232.8 413.4L231.6 416.0L228.7 417.4L228.7 419.0L224.4 423.3L224.2 421.5L220.7 423.6L216.3 422.3L214.4 423.6L215.1 425.2L213.5 424.9L212.4 426.4L207.5 426.0L204.8 423.6L201.6 417.3L198.7 417.6L193.6 414.9L188.5 416.0L185.0 414.2L178.5 409.4L177.1 405.3L169.5 401.6L162.5 395.5L160.5 395.2L159.9 397.0L164.2 401.2L172.5 406.1L173.2 410.1L176.0 413.1L176.6 415.3L173.1 415.2L172.8 416.9L171.2 415.3L168.5 415.3L167.1 412.7L160.9 411.7L160.7 409.7L164.9 412.4L166.8 412.2L166.1 410.6L156.1 405.0L155.8 405.9L158.3 408.1L153.4 405.9L151.6 407.1L157.5 411.5L151.4 416.3L145.8 416.6L145.6 414.8L143.5 413.2L143.6 411.1L145.7 411.6L145.5 410.2L140.7 409.1L141.3 408.4L139.4 407.5L139.6 405.7L136.3 408.3L136.2 409.9L139.9 411.7L138.0 414.1L132.5 411.7L133.3 408.6L131.0 406.8L132.1 404.7L133.7 404.3L132.5 402.5L129.1 403.0L128.3 399.2L126.2 398.5L126.2 397.4L125.1 398.7L125.8 400.9L123.5 402.8L122.7 397.6L118.8 397.4L118.2 396.2L117.6 398.3L119.0 399.8L116.8 399.4L109.7 402.0L107.5 405.5L107.9 407.7L103.4 410.9L104.8 412.8L103.4 414.0L107.0 416.8L108.8 416.4L109.5 418.9L109.6 417.3L111.2 418.4L114.8 417.9L114.9 415.6L115.7 416.4L116.8 414.8L118.9 415.8L121.6 414.4L123.5 417.4L122.3 419.0L121.2 418.8L122.2 418.2L121.6 417.1L120.6 418.3L121.3 422.3L119.3 424.6L117.5 424.1L118.6 422.5L117.1 420.8L113.5 419.4L112.6 421.7L108.0 423.7L108.9 426.1L111.4 426.5L105.9 428.4L102.6 427.0L101.3 428.5L96.0 427.5L92.8 422.4L89.9 421.8L87.2 423.1L85.2 421.0L81.7 424.5L76.6 426.1L74.8 429.3L72.9 428.4L68.7 430.2L63.0 429.1L61.6 431.0L58.7 430.0L58.7 427.3L57.0 425.1L50.8 424.9L47.6 429.3L39.2 432.1L36.8 431.7L33.7 428.2L38.4 427.7L37.1 424.8L39.1 423.1L37.5 424.2L34.8 423.5L32.4 426.1L31.1 426.0L27.8 418.7L23.7 414.4L23.0 410.1L26.3 405.6L24.8 398.7L28.0 390.6L27.5 385.9L29.6 383.6L29.9 379.0L33.6 373.3L32.6 369.9L28.9 364.9L29.9 353.7L38.1 340.4L40.7 329.6L45.3 326.2L44.5 316.9L47.4 309.0L47.8 304.6L51.0 301.8L50.8 292.1L54.4 284.5L58.9 281.7L65.5 273.9L66.3 269.1L70.1 268.7L71.5 265.2L74.6 265.0L76.5 263.3L80.9 252.0L86.1 243.2L94.3 237.6L96.6 229.9L100.8 224.1L101.7 214.8L105.0 207.8L103.2 207.9L103.6 206.0L112.3 198.3L109.1 194.1L113.1 188.7L113.5 185.4L111.1 187.4L110.3 186.0L113.1 183.6L114.2 179.3L108.5 177.2L110.4 174.5L106.2 163.3L106.9 159.4L110.5 158.6L117.2 166.8L120.6 168.0L123.0 166.8L124.1 164.6L121.8 155.8L130.3 154.1L129.2 155.5L129.8 156.2L128.6 155.8L130.8 157.3L129.3 160.6L131.5 164.3L131.2 165.9L134.1 167.4L133.3 168.2L135.2 167.7L139.5 169.1L140.4 167.3L141.5 167.4L141.1 169.9L142.5 171.9L143.8 170.4L148.3 170.2L148.2 172.8L146.2 175.1L145.1 175.1L144.1 172.9L141.9 174.8L142.8 180.0L140.2 181.5L139.9 183.6L141.5 184.6L142.3 182.9L144.1 184.6L147.6 181.3L148.4 178.3L149.4 179.0L152.7 176.7L151.1 174.6L152.0 172.6L153.0 173.1L152.8 170.0L154.2 170.5L155.8 169.3L158.2 171.0L160.5 170.8L162.6 166.8L165.6 167.2L166.2 169.4L168.0 168.4L166.9 166.1L164.3 165.0L163.3 160.7L164.2 162.5L165.6 162.6L166.4 160.1L173.9 160.8L178.6 159.4L181.7 155.3L180.4 152.8L183.3 150.0L186.8 151.4L188.8 149.5L190.1 151.5L192.2 151.2L193.3 149.4L191.4 147.8L193.3 145.2L193.2 142.3L190.3 139.8L190.1 142.9L187.9 143.4L186.7 141.5L189.4 140.2L182.6 138.8L184.9 138.1L184.3 134.9L189.2 133.4L190.8 134.6L193.7 132.0L196.6 134.6L198.4 132.3L200.3 132.0L201.5 135.4L204.2 135.0L205.7 137.9L205.7 133.0L213.0 131.6Z"/>
+              <path fill="#c1ddd5" d="M405.9 42.5L408.1 43.5L408.5 46.3L409.8 45.6L411.5 47.0L411.1 52.0L414.4 52.4L417.2 55.3L417.2 54.5L421.0 54.1L420.9 55.3L424.0 57.3L423.9 59.5L425.4 61.3L421.4 64.8L424.6 67.4L426.7 66.8L427.5 70.1L428.9 69.8L429.6 71.6L430.8 71.6L430.1 72.1L432.6 75.6L430.9 79.0L431.5 83.3L434.4 85.4L435.6 84.9L438.2 87.6L437.1 90.1L441.9 90.6L442.8 93.2L443.9 92.3L446.5 95.2L452.0 96.9L452.2 99.3L455.2 98.0L458.1 100.7L455.7 103.9L456.2 105.3L462.6 107.4L462.9 109.9L458.7 116.0L458.8 118.6L457.4 118.1L456.7 119.3L456.9 125.6L450.9 130.2L454.9 136.7L459.2 138.9L461.8 138.6L462.8 147.8L465.6 147.4L468.5 158.1L471.4 159.6L472.7 158.8L473.5 160.0L472.8 166.3L474.3 167.4L475.0 171.7L479.7 172.8L484.1 176.6L484.3 179.2L487.0 183.1L491.9 182.8L495.8 184.4L495.1 182.0L500.6 182.5L506.5 187.3L508.4 187.4L509.1 192.8L511.0 192.7L511.5 194.5L513.3 194.8L513.9 197.2L516.5 198.5L516.2 200.5L521.8 204.2L521.9 208.1L523.1 209.4L527.9 211.9L532.5 210.9L542.5 219.4L543.5 227.9L545.6 229.7L552.3 233.5L552.8 229.8L559.2 229.2L561.6 232.9L563.7 231.9L563.1 233.2L567.9 240.8L573.7 239.6L576.5 246.4L579.0 246.8L581.3 251.1L580.4 253.2L583.6 254.3L582.1 259.8L580.2 262.1L582.0 263.9L584.1 263.8L583.8 265.0L582.0 265.1L583.7 273.5L581.7 277.7L582.2 280.1L579.4 283.8L577.8 282.5L577.5 287.1L575.9 289.4L564.1 282.6L561.5 283.8L555.9 280.2L555.6 282.7L553.2 285.0L550.9 284.1L549.9 285.0L552.0 291.0L549.7 298.3L551.0 301.6L549.4 308.3L542.1 316.8L535.7 321.2L528.9 321.4L515.2 327.0L509.7 333.7L501.9 335.3L500.3 339.9L496.0 342.9L495.1 346.0L492.6 345.7L491.9 348.2L493.0 352.6L501.6 360.2L503.9 366.9L508.0 367.9L508.5 370.0L509.8 369.3L516.3 381.4L510.1 392.3L511.7 393.1L508.4 398.8L510.3 400.5L514.7 400.7L518.5 398.4L524.5 402.9L524.3 405.2L526.4 409.7L523.4 414.3L524.3 416.1L521.8 416.8L523.2 419.6L521.0 423.6L522.6 425.1L522.8 429.0L520.9 429.9L519.3 432.9L516.6 430.3L515.9 431.8L510.2 429.0L507.5 425.8L504.9 424.8L504.4 422.7L501.7 423.0L499.5 421.6L498.0 418.6L499.2 415.6L501.9 414.0L495.7 409.1L497.6 405.9L495.5 407.5L493.2 405.4L489.8 405.2L485.6 407.0L481.9 406.7L479.3 412.4L475.7 412.0L472.5 413.7L466.9 407.4L466.7 404.6L459.9 406.4L457.5 404.7L450.2 407.4L448.8 405.5L450.7 400.3L450.0 398.9L445.4 403.9L441.7 404.8L445.3 412.7L445.9 417.3L443.7 418.2L443.7 416.4L439.2 417.7L433.3 416.2L429.5 417.3L428.2 415.5L425.4 417.3L419.7 417.4L414.5 419.1L413.6 421.9L407.9 420.8L397.0 422.2L394.9 420.9L394.7 422.7L392.1 422.8L390.6 426.2L390.8 430.2L389.4 431.7L383.4 433.2L378.3 433.0L377.2 431.9L372.5 437.9L374.9 438.5L376.1 441.4L368.5 441.0L366.7 443.4L364.3 444.1L364.3 446.8L362.8 448.1L358.5 448.6L360.9 444.1L356.7 443.5L349.7 446.5L348.6 448.8L335.4 448.6L336.5 444.5L331.3 439.1L332.1 437.8L326.0 437.7L326.0 435.5L330.3 433.5L327.7 430.4L317.6 433.8L315.7 431.1L310.0 429.9L309.7 428.0L304.6 428.1L301.2 426.7L298.7 431.6L291.4 430.8L288.3 428.8L286.3 435.8L287.4 438.3L289.7 439.3L290.5 445.3L287.0 448.2L287.1 452.2L283.3 452.9L277.6 462.5L274.5 463.2L268.8 467.2L266.0 466.4L263.5 467.3L263.9 463.9L267.3 461.8L265.7 459.8L269.0 452.3L264.0 451.0L262.6 454.2L258.4 453.3L256.7 456.2L255.3 450.2L253.8 448.8L257.0 446.3L255.7 442.2L253.8 442.7L251.4 438.5L247.0 438.7L247.0 436.5L244.2 434.1L244.7 430.8L243.6 431.2L244.0 432.3L242.0 431.9L240.2 433.0L236.5 430.6L235.9 433.2L230.6 430.7L231.3 425.5L227.2 424.4L224.5 427.8L222.9 432.7L221.3 430.4L218.5 431.6L218.3 429.6L212.0 427.7L211.3 426.0L215.0 425.3L214.4 423.6L216.3 422.3L220.7 423.6L224.2 421.5L224.4 423.3L228.7 419.0L228.7 417.4L231.6 416.0L232.8 413.4L243.5 416.6L247.2 412.6L249.6 411.9L249.8 413.6L252.4 412.8L254.1 418.2L255.1 413.7L257.1 414.6L258.8 413.1L259.6 409.6L257.5 407.5L257.6 402.1L252.7 398.7L254.9 396.3L257.3 396.7L257.2 395.3L259.2 395.4L256.0 391.1L256.4 389.7L255.0 390.7L256.1 388.1L254.2 389.4L253.6 387.8L256.2 386.2L255.3 385.4L256.6 378.8L254.2 375.3L256.8 373.2L258.5 367.7L258.9 356.8L255.8 352.5L253.6 342.2L251.5 338.1L251.9 332.6L245.7 323.9L245.8 321.8L244.8 320.8L243.9 321.9L242.9 320.3L249.5 312.9L248.2 311.9L248.7 309.1L251.4 309.3L255.0 306.4L257.6 309.4L261.0 308.9L261.6 306.6L267.1 304.3L266.1 301.8L273.2 300.0L272.2 297.1L273.2 294.2L271.4 291.2L271.7 289.3L274.0 288.5L268.3 282.5L269.0 276.0L273.4 278.7L275.1 277.9L277.3 282.6L279.7 280.7L281.4 276.4L283.9 277.2L282.6 277.5L283.0 279.9L281.6 281.5L285.0 280.9L289.0 277.8L286.9 275.8L287.9 275.1L285.5 272.3L286.2 271.5L284.8 272.5L281.9 269.9L283.0 268.8L281.6 266.7L283.4 266.1L282.2 263.0L284.6 261.3L284.6 258.8L282.7 257.2L285.0 254.8L284.5 250.5L282.0 248.8L285.1 247.2L283.4 245.1L284.5 244.4L282.7 243.4L281.6 240.4L280.3 240.7L281.0 239.1L280.0 238.1L275.7 235.6L275.4 232.6L272.8 233.0L270.5 230.7L266.8 231.3L267.8 228.3L265.1 226.3L266.5 224.1L262.5 223.5L264.2 220.6L267.0 219.3L266.2 216.6L263.6 214.7L261.7 215.8L260.3 212.3L259.0 212.7L258.1 210.9L255.3 210.0L255.4 208.5L256.6 208.8L254.8 203.7L255.9 202.9L253.9 202.2L255.1 200.0L256.0 201.7L257.9 199.2L255.8 196.6L256.6 193.6L253.8 192.8L253.3 191.6L253.5 189.8L255.0 189.2L253.4 186.2L258.1 183.9L256.1 182.9L257.3 183.1L257.2 181.6L255.6 178.4L252.2 177.0L253.1 174.9L254.6 174.8L252.6 171.1L254.4 168.5L251.2 168.5L251.2 164.4L249.1 164.0L247.3 166.2L248.7 168.1L246.3 169.6L245.7 171.9L239.7 172.8L236.4 171.1L237.3 162.2L234.9 161.7L236.1 158.8L233.0 159.8L231.6 164.1L227.4 162.9L230.6 159.9L229.9 157.6L232.7 155.6L231.1 151.4L228.9 150.1L228.3 147.2L229.8 145.8L229.0 143.1L225.9 140.9L226.2 139.5L222.1 142.3L221.0 145.3L220.0 145.2L218.4 140.1L217.6 141.5L215.6 141.6L215.5 144.7L213.6 145.5L211.1 143.3L212.4 141.1L211.3 139.5L212.9 138.6L212.1 136.6L213.3 134.9L213.0 131.6L205.5 133.1L205.6 137.9L204.2 135.0L201.5 135.4L200.5 132.1L198.4 132.3L196.5 134.6L193.5 132.0L190.8 134.6L189.2 133.4L184.3 134.9L184.9 138.1L182.6 138.6L189.4 140.2L186.7 141.5L187.9 143.4L190.1 142.9L189.9 140.5L191.6 140.1L193.5 144.4L191.5 147.7L193.3 149.4L192.2 151.2L190.1 151.5L188.8 149.5L186.8 151.4L183.3 150.0L180.4 152.8L181.7 155.3L178.6 159.4L173.9 160.8L167.2 160.9L164.2 157.1L162.7 157.0L162.7 154.7L165.8 151.7L164.7 144.9L167.9 144.0L167.6 142.0L170.0 138.3L166.2 136.2L168.6 133.0L168.4 131.4L164.8 131.9L163.6 128.3L164.3 124.3L162.5 126.4L162.1 124.4L160.2 125.0L159.9 121.8L161.3 121.7L159.0 116.0L159.8 114.0L158.3 105.5L159.0 104.4L161.2 104.8L160.0 103.8L159.7 98.7L155.7 98.4L155.0 97.0L156.9 94.7L156.8 91.8L158.6 89.1L167.3 87.1L170.2 88.3L169.8 91.9L173.4 87.0L172.7 85.6L176.0 84.0L178.6 85.4L183.4 86.1L185.1 85.1L186.3 86.4L189.0 86.4L192.5 92.7L201.0 91.3L200.5 84.4L202.5 82.4L199.7 80.4L201.2 77.2L199.3 73.6L199.9 71.4L203.4 73.9L206.3 72.8L206.9 74.2L213.8 72.6L214.2 71.8L211.5 70.2L212.8 67.8L217.1 66.3L220.7 62.3L220.8 58.2L219.6 56.2L221.9 46.8L223.5 47.8L225.4 47.1L225.9 48.6L230.3 50.5L231.2 49.0L232.3 50.3L238.6 47.0L245.0 39.2L245.4 34.6L248.2 32.9L251.1 28.1L252.7 28.4L254.0 30.8L254.8 29.6L256.9 30.8L257.1 29.6L259.3 29.2L259.7 31.0L261.8 32.3L261.7 34.8L263.9 34.7L268.2 37.4L270.2 37.0L270.8 40.8L273.5 44.4L274.7 44.4L273.8 45.3L276.6 46.2L275.0 48.4L275.9 50.4L280.6 49.0L281.9 52.6L284.5 53.4L284.4 55.3L286.1 54.7L286.3 56.0L288.8 54.0L290.4 57.6L293.7 58.0L293.1 61.4L294.2 63.4L293.0 66.3L294.4 66.3L293.6 67.5L294.8 69.3L293.6 69.7L295.0 72.6L301.4 72.2L304.0 75.0L305.2 73.9L305.2 68.7L308.4 70.1L311.0 68.6L313.1 70.4L315.4 68.5L314.9 65.3L311.2 64.8L311.1 63.2L308.3 63.2L303.4 58.9L304.6 55.9L303.4 56.1L303.4 53.8L306.7 54.4L309.3 50.8L310.9 51.6L313.1 49.7L315.8 50.3L317.0 49.1L318.5 51.2L322.3 49.6L326.5 55.4L327.7 54.7L327.1 53.0L330.5 53.4L331.4 55.6L335.0 54.5L335.3 52.7L337.5 52.5L337.7 54.8L339.6 54.2L341.4 57.2L339.1 60.3L340.4 63.3L343.7 63.8L342.9 65.1L344.0 65.3L344.8 62.3L349.6 65.2L349.4 61.2L351.0 60.1L350.1 56.0L351.4 56.2L350.1 54.0L352.0 52.9L349.6 47.7L350.3 43.4L348.4 41.2L348.3 37.4L351.9 36.2L352.1 37.6L352.8 35.8L354.7 35.4L354.5 33.1L356.7 32.6L356.6 31.3L363.7 32.3L364.7 33.9L362.9 34.8L363.2 41.5L365.9 43.0L365.3 44.4L368.5 42.9L368.4 46.9L371.8 47.6L372.0 50.4L375.4 49.0L376.4 46.8L378.2 46.4L380.9 48.4L387.9 45.9L388.5 46.9L390.9 44.9L392.5 45.6L391.5 44.3L393.4 44.7L394.0 43.7L397.9 45.5L397.9 47.4ZM288.4 428.8L290.7 424.9L286.3 425.4Z"/>
+            </g>
+            <g fill="#184d52" text-anchor="middle" font-family="system-ui, sans-serif" font-size="32" font-weight="650">
+              <text x="151" y="277"><tspan x="151">Baden-</tspan><tspan x="151" dy="37">Württemberg</tspan></text>
+              <text x="385" y="267">Bayern</text>
+            </g>
+          </svg>
+          <figcaption>© <a href="https://www.bkg.bund.de">BKG</a> (2026) · <a href="https://www.govdata.de/dl-de/by-2-0">dl-de/by-2-0</a> · <a href="https://sgx.geodatenzentrum.de/web_public/gdz/datenquellen/datenquellen_vg_nuts.pdf">Datenquellen</a> · vereinfacht</figcaption>
+      </figure>
+
+    </section>
+
+    <section class="process" id="ablauf" aria-labelledby="process-title" tabindex="-1">
+      <h2 id="process-title">Der Ablauf</h2>
+      <p class="process-intro">Vom ersten Telefonat bis zum Verkaufsstart. Nach der Bewertung entscheiden Sie, ob Sie den nächsten Schritt gehen möchten.</p>
+      <ol role="list">
+        <li>
+          <svg class="process-drawing" viewBox="0 0 220 122" aria-hidden="true" focusable="false">
+            <ellipse cx="105" cy="104" rx="81" ry="11" fill="#edf3f0"/>
+            <g stroke="#195b65" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="51" y="14" width="47" height="86" rx="9" fill="#dfece6"/>
+              <path d="M66 24h17m-13 65h9" fill="none"/>
+              <path d="M105 30h54a9 9 0 0 1 9 9v22a9 9 0 0 1-9 9h-21l-13 11V70h-20a8 8 0 0 1-8-8V38a8 8 0 0 1 8-8Z" fill="#fff"/>
+              <path d="M115 47h35m-35 10h22" fill="none"/>
+            </g>
+          </svg>
+          <h3>Wir sprechen zuerst am Telefon</h3>
+          <p>Sie erzählen uns von Ihrem Haus oder Ihrer Wohnung und was Ihnen beim Wohnenbleiben wichtig ist. Wir beantworten Ihre ersten Fragen zum Nießbrauch, zur möglichen Auszahlung und zum weiteren Vorgehen.</p>
+        </li>
+        <li>
+          <svg class="process-drawing" viewBox="0 0 220 122" aria-hidden="true" focusable="false">
+            <ellipse cx="105" cy="104" rx="81" ry="11" fill="#edf3f0"/>
+            <g stroke="#195b65" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M38 59 91 20l53 39H38Z" fill="#dfece6"/>
+              <path d="M50 59v42h82V59" fill="#f6f9f7"/>
+              <path d="M63 69h20v17H63zM96 101V69h19v32" fill="#fff"/>
+              <path d="m143 101-9-61 24-4 9 61z" fill="#ecd6ad"/>
+              <path d="m136 51 8-1m-6 11 5-1m-4 11 8-1m-6 11 5-1" fill="none"/>
+            </g>
+          </svg>
+          <h3>Besichtigung und Immobilienbewertung vor Ort</h3>
+          <p>Bei einem Termin vor Ort sehen wir uns die Immobilie an und ermitteln ihren Wert. Danach besprechen wir mit Ihnen, wie der lebenslange Nießbrauch bei der Berechnung des möglichen Kaufpreises berücksichtigt wird.</p>
+        </li>
+        <li>
+          <svg class="process-drawing" viewBox="0 0 220 122" aria-hidden="true" focusable="false">
+            <ellipse cx="105" cy="104" rx="81" ry="11" fill="#edf3f0"/>
+            <g stroke="#195b65" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="68" y="12" width="76" height="90" rx="4" fill="#fff"/>
+              <path d="m84 48 21-15 21 15H84Zm5 0v18h32V48m-21 18V54h10v12" fill="#dfece6"/>
+              <path d="M84 79h42m-42 10h23" fill="none"/>
+              <path d="M137 61h38v28h-38z" fill="#ecd6ad"/>
+              <path d="m137 62 19 15 19-15" fill="none"/>
+            </g>
+          </svg>
+          <h3>Die Immobilie wird Investoren angeboten</h3>
+          <p>Wenn Sie sich für den Verkauf entscheiden, bieten wir die Immobilie interessierten Investoren mit dem vereinbarten Nießbrauch an. Kommt ein Verkauf zustande, begleiten wir die Vorbereitung des Notartermins. Eine Sofortrente können Sie auf Wunsch aus dem Erlös finanzieren.</p>
+        </li>
+      </ol>
+      <div class="process-proof">
+        <h3>Was wird vor der Unterschrift geregelt?</h3>
+        <p>Der Notar beurkundet den Kaufvertrag. Vorher klären Sie, für wen der Nießbrauch im Grundbuch eingetragen wird, welchen Rang er erhält und unter welchen Voraussetzungen der Kaufpreis fällig ist.</p>
+      </div>
+    </section>
+    <section class="contact-section" id="kontakt" aria-labelledby="contact-title">
+      <div class="site-shell">
+        <div>
+          <h2 id="contact-title">Was ist für Sie und Ihre Immobilie möglich?</h2>
+          <p>Erhalten Sie in drei Schritten eine erste Einschätzung, welchen Erlös ein Verkauf mit lebenslangem Nießbrauch ermöglichen könnte.</p>
+        </div>
+        <a class="calculator-cta" href="immobilienrechner.html" data-open-rechner>Immobilienrechner starten <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-shell">
+      <div>
+        <a class="brand" href="#seitenanfang" aria-label="bleibrente, Seitenanfang"><img src="bleibrente-logo-offene-tuer.svg" width="202" height="38" alt="bleibrente"></a>
+        <p class="footer-tagline">bleibrente bringt Eigentümer und Käufer zusammen. So können Sie nach dem Verkauf in Ihrem Zuhause bleiben, gebundenes Kapital nutzen und auf Wunsch eine lebenslange Sofortrente finanzieren.</p>
+      </div>
+      <nav class="footer-group" aria-labelledby="footer-navigation-title">
+        <h2 id="footer-navigation-title">Navigation</h2>
+        <a href="#so-funktionierts">So funktioniert’s</a>
+        <a href="#ablauf">Der Ablauf</a>
+      </nav>
+      <nav class="footer-group" aria-labelledby="footer-knowledge-title">
+        <h2 id="footer-knowledge-title">Wissen</h2>
+        <a href="immobilienverrentung.html">Immobilienverrentung im Überblick</a>
+        <a href="niessbrauch.html">Nießbrauch erklärt</a>
+        <a href="leibrente-vergleich.html">Leibrente im Vergleich</a>
+        <a href="sofortrente.html">Sofortrente erklärt</a>
+      </nav>
+      <div class="footer-group">
+        <h2>Kontakt</h2>
+        <address><a href="mailto:info@bleibrente.de">info@bleibrente.de</a></address>
+      </div>
+    </div>
+  </footer>
+
+  <dialog class="calculator-dialog" id="rechner" aria-label="Immobilienrechner">
+    <div class="calculator-dialog-header">
+      <form method="dialog">
+        <button class="calculator-dialog-close" type="submit" aria-label="Rechner schließen" autofocus>×</button>
+      </form>
+    </div>
+    <iframe title="Immobilienrechner von bleibrente" data-src="immobilienrechner.html?fenster=1"></iframe>
+  </dialog>
+  <script src="rechner-fenster.js" defer></script>
+
+  <script>
+    const siteHeader = document.querySelector('.site-header');
+    const mobileNav = siteHeader.querySelector('.mobile-nav');
+    function syncHeader() {
+      siteHeader.classList.toggle('is-scrolled', window.scrollY > 12);
+    }
+    mobileNav.addEventListener('click', (event) => {
+      if (event.target.closest('a[href^="#"]')) mobileNav.open = false;
+    });
+    mobileNav.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || !mobileNav.open) return;
+      event.preventDefault();
+      mobileNav.open = false;
+      mobileNav.querySelector('summary').focus();
+    });
+    document.addEventListener('pointerdown', (event) => {
+      if (mobileNav.open && !mobileNav.contains(event.target)) mobileNav.open = false;
+    });
+    matchMedia('(max-width: 60rem)').addEventListener('change', () => { mobileNav.open = false; });
+    window.addEventListener('scroll', syncHeader, { passive: true });
+    syncHeader();
+
+    const familyQuestions = document.querySelector('#family-questions');
+    const familyCards = [...familyQuestions.children];
+    const familyControls = document.querySelector('.family-controls');
+    const familyCount = familyControls.querySelector('p');
+    const familyPrev = familyControls.querySelector('[data-family-prev]');
+    const familyNext = familyControls.querySelector('[data-family-next]');
+    const familyMobile = matchMedia('(max-width: 48rem)');
+
+    function familyPositions() {
+      const first = familyCards[0].getBoundingClientRect().left;
+      const limit = Math.max(0, familyQuestions.scrollWidth - familyQuestions.clientWidth);
+      return familyCards.map((card) => Math.min(card.getBoundingClientRect().left - first, limit));
+    }
+
+    function currentFamilyCard(positions) {
+      return positions.reduce((nearest, left, index) =>
+        Math.abs(left - familyQuestions.scrollLeft) < Math.abs(positions[nearest] - familyQuestions.scrollLeft) ? index : nearest, 0);
+    }
+
+    function updateFamilyControls() {
+      if (!familyMobile.matches) return;
+      const index = currentFamilyCard(familyPositions());
+      const label = (index + 1) + ' von ' + familyCards.length;
+      if (familyCount.textContent !== label) familyCount.textContent = label;
+      familyPrev.setAttribute('aria-disabled', String(index === 0));
+      familyNext.setAttribute('aria-disabled', String(index === familyCards.length - 1));
+    }
+
+    function moveFamilyCard(direction) {
+      const positions = familyPositions();
+      const target = currentFamilyCard(positions) + direction;
+      if (target < 0 || target >= positions.length) return;
+      familyQuestions.scrollTo({ left: positions[target] });
+    }
+
+    function syncFamilyLayout() {
+      familyControls.hidden = !familyMobile.matches;
+      if (familyMobile.matches) familyQuestions.setAttribute('tabindex', '0');
+      else familyQuestions.removeAttribute('tabindex');
+      updateFamilyControls();
+    }
+
+    familyPrev.addEventListener('click', () => moveFamilyCard(-1));
+    familyNext.addEventListener('click', () => moveFamilyCard(1));
+    familyQuestions.addEventListener('scroll', updateFamilyControls, { passive: true });
+    window.addEventListener('resize', syncFamilyLayout);
+    syncFamilyLayout();
+
+    const payoutAllocation = document.querySelector('.allocation');
+    const payoutSlider = document.querySelector('#payout-monthly-percent');
+    const upfrontShare = document.querySelector('#payout-upfront-share');
+    const monthlyShare = document.querySelector('#payout-monthly-share');
+    function syncPayoutExample() {
+      const monthly = payoutSlider.valueAsNumber;
+      const upfront = 100 - monthly;
+      payoutAllocation.style.setProperty('--mixed-upfront', upfront + '%');
+      upfrontShare.textContent = upfront + '\u00a0%';
+      monthlyShare.textContent = monthly + '\u00a0%';
+      payoutSlider.setAttribute('aria-valuetext', monthly + ' Prozent für die Sofortrente');
+    }
+    payoutSlider.addEventListener('input', syncPayoutExample);
+    syncPayoutExample();
+    document.querySelector('#payout-adjuster').hidden = false;
+
+    const diagram = document.querySelector('#diagram-template');
+    const diagrams = document.querySelectorAll('[data-scene]');
+    for (const container of diagrams) {
+      const copy = diagram.content.cloneNode(true);
+      if (container.classList.contains('mobile-diagram')) {
+        copy.firstElementChild.setAttribute('viewBox',
+          container.dataset.scene === '3' ? '35 98 222 115' : '0 25 520 184');
+      }
+      if (container.matches('.mobile-income')) {
+        container.querySelector('figcaption').after(copy);
+      } else {
+        container.prepend(copy);
+      }
+    }
+    document.documentElement.classList.add('has-diagrams');
+
+    const sequence = document.querySelector('.scroll-sequence');
+    const stage = sequence.querySelector('.stage');
+    const track = sequence.querySelector('.scroll-track');
+    const desktopDiagram = sequence.querySelector('.desktop-diagram');
+    const steps = [...sequence.querySelectorAll('.step')];
+    const counter = sequence.querySelector('.counter');
+    const back = sequence.querySelector('[data-back]');
+    const next = sequence.querySelector('[data-next]');
+    const motion = matchMedia('(prefers-reduced-motion: no-preference)');
+    let current = -1;
+    let frame = 0;
+    let pinned = false;
+
+    function setStep(index) {
+      if (current === index) return;
+      current = index;
+      desktopDiagram.dataset.scene = index;
+      for (const [stepIndex, step] of steps.entries()) {
+        step.classList.toggle('active', stepIndex === index);
+      }
+      back.setAttribute('aria-disabled', String(index === 0));
+      next.setAttribute('aria-disabled', String(index === steps.length - 1));
+      counter.textContent = (index + 1) + ' von ' + steps.length;
+    }
+
+    function getScrollPosition() {
+      const stride = track.offsetHeight / (steps.length - 1);
+      const progress = parseFloat(getComputedStyle(stage).top) - sequence.getBoundingClientRect().top;
+      return { stride, progress };
+    }
+
+    function syncScroll() {
+      frame = 0;
+      const { stride, progress } = getScrollPosition();
+      if (!stride) return;
+      const index = Math.max(0, Math.min(steps.length - 1, Math.round(progress / stride)));
+      setStep(index);
+    }
+
+    function scheduleSync() {
+      if (pinned && !frame) frame = requestAnimationFrame(syncScroll);
+    }
+
+    function goToStep(index) {
+      if (index < 0 || index >= steps.length) return;
+      const { stride, progress } = getScrollPosition();
+      window.scrollTo({ top: window.scrollY - progress + stride * index, behavior: 'smooth' });
+    }
+
+    function syncLayout() {
+      document.documentElement.classList.toggle('enhanced', motion.matches);
+      pinned = motion.matches && stage.offsetHeight + siteHeader.offsetHeight <= window.innerHeight + 1;
+      document.documentElement.classList.toggle('enhanced', pinned);
+      if (pinned) syncScroll();
+    }
+
+    back.addEventListener('click', () => goToStep(current - 1));
+    next.addEventListener('click', () => goToStep(current + 1));
+    motion.addEventListener('change', syncLayout);
+    window.addEventListener('resize', syncLayout);
+    window.addEventListener('scroll', scheduleSync, { passive: true });
+    syncLayout();
+  </script>
+</body>
+</html>
