@@ -638,26 +638,8 @@
 
     .mobile-sequence {
       --sequence-stride: clamp(18rem, 54svh, 26rem);
-      position: relative;
       scroll-margin-top: var(--header-height);
     }
-
-    html:has(.mobile-sequence) { scroll-snap-type: y proximity; }
-
-    .sequence-stop { display: none; }
-
-    .mobile-sequence .sequence-stop {
-      display: block;
-      position: absolute;
-      inset: calc(var(--sequence-stride) * var(--sequence-index)) 0 auto;
-      height: 1px;
-      scroll-margin-top: var(--header-height);
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      pointer-events: none;
-    }
-
-    .mobile-sequence .sequence-stop.is-released { scroll-snap-align: none; }
 
     .mobile-sequence .sequence-stage {
       position: sticky;
@@ -667,7 +649,9 @@
       align-content: center;
       gap: clamp(.55rem, 1.6svh, 1rem);
       min-height: calc(100svh - var(--header-height));
+      margin-inline: calc((100% - 100vw) / 2);
       padding-block: .65rem;
+      padding-inline: calc((100vw - 100%) / 2);
       background: #fff;
     }
 
@@ -911,10 +895,6 @@
         </div>
       </div>
       <div class="sequence-track" aria-hidden="true"></div>
-      <span class="sequence-stop" style="--sequence-index: 0" aria-hidden="true"></span>
-      <span class="sequence-stop" style="--sequence-index: 1" aria-hidden="true"></span>
-      <span class="sequence-stop" style="--sequence-index: 2" aria-hidden="true"></span>
-      <span class="sequence-stop" style="--sequence-index: 3" aria-hidden="true"></span>
     </section>
 
     <section class="payout" id="auszahlung" aria-labelledby="payout-title" tabindex="-1">
@@ -1287,7 +1267,6 @@
     const explanation = document.querySelector('.explanation');
     const sequenceStage = explanation.querySelector('.sequence-stage');
     const sequenceTrack = explanation.querySelector('.sequence-track');
-    const sequenceStops = [...explanation.querySelectorAll('.sequence-stop')];
     const sequenceVisual = explanation.querySelector('.sequence-visual');
     const sequenceSteps = [...explanation.querySelectorAll('.step')];
     const sequenceLinks = [...sequenceVisual.querySelectorAll('.step-nav a')];
@@ -1295,7 +1274,6 @@
     const compactSequence = matchMedia('(max-width: 48rem)');
     let mobileSequence = false;
     let sequenceTouch = null;
-    let releasedSequenceStop = null;
     let sequenceFrame = 0;
     let sequenceExit = 0;
 
@@ -1317,20 +1295,9 @@
       return { stride, progress };
     }
 
-    function releaseSequenceStop(index) {
-      if (releasedSequenceStop !== null) sequenceStops[releasedSequenceStop].classList.remove('is-released');
-      releasedSequenceStop = index;
-      if (index !== null) sequenceStops[index].classList.add('is-released');
-    }
-
     function syncMobileSequence() {
       const { stride, progress } = mobileSequencePosition();
       const end = stride * (sequenceSteps.length - 1);
-      if (releasedSequenceStop !== null) {
-        const distance = releasedSequenceStop === 0 ? -progress : progress - end;
-        if (distance > stride || distance < -1) releaseSequenceStop(null);
-      }
-
       sequenceStage.classList.toggle('is-pinned', progress >= -1 && progress < end - 1);
       setSequenceStep(Math.max(0, Math.min(sequenceSteps.length - 1, Math.floor((progress + 1) / stride))));
     }
@@ -1367,10 +1334,7 @@
       explanation.classList.toggle('mobile-sequence', compactSequence.matches);
       mobileSequence = compactSequence.matches && sequenceStage.offsetHeight + siteHeader.offsetHeight <= innerHeight + 1;
       explanation.classList.toggle('mobile-sequence', mobileSequence);
-      if (!mobileSequence) {
-        sequenceStage.classList.remove('is-pinned');
-        releaseSequenceStop(null);
-      }
+      if (!mobileSequence) sequenceStage.classList.remove('is-pinned');
       for (const step of sequenceSteps) step.inert = mobileSequence && !step.classList.contains('is-current');
       scheduleSequence();
     }
@@ -1388,23 +1352,20 @@
       });
     }
 
-    document.addEventListener('touchstart', (event) => {
+    sequenceStage.addEventListener('touchstart', (event) => {
       sequenceTouch = null;
-      if (!mobileSequence || event.touches.length !== 1 ||
-          document.querySelector('.calculator-dialog[open], .mobile-nav[open]')) return;
+      if (!mobileSequence || event.touches.length !== 1) return;
       const { stride, progress } = mobileSequencePosition();
       const last = sequenceSteps.length - 1;
       const end = stride * last;
       const entering = progress < -1 || progress > end + 1;
-      const distanceFromSequence = Math.max(-progress, progress - end, 0);
-      if (distanceFromSequence >= innerHeight - siteHeader.offsetHeight) return;
 
       const touch = event.touches[0];
       const index = Math.max(0, Math.min(last, Math.floor((progress + 1) / stride)));
       sequenceTouch = { x: touch.clientX, y: touch.clientY, index, progress, entering, direction: 0 };
     }, { passive: true });
 
-    document.addEventListener('touchmove', (event) => {
+    sequenceStage.addEventListener('touchmove', (event) => {
       if (!sequenceTouch || event.touches.length !== 1) return;
       const touch = event.touches[0];
       const distance = sequenceTouch.y - touch.clientY;
@@ -1417,11 +1378,9 @@
         }
         const target = sequenceTouch.index + direction;
         if (target < 0 || target >= sequenceSteps.length) {
-          if (!sequenceTouch.entering) releaseSequenceStop(sequenceTouch.index);
           sequenceTouch = null;
           return;
         }
-        if (sequenceTouch.entering) releaseSequenceStop(null);
         sequenceTouch.direction = direction;
       }
 
@@ -1434,8 +1393,8 @@
       }
     }, { passive: false });
 
-    document.addEventListener('touchcancel', () => { sequenceTouch = null; });
-    document.addEventListener('touchend', (event) => {
+    sequenceStage.addEventListener('touchcancel', () => { sequenceTouch = null; });
+    sequenceStage.addEventListener('touchend', (event) => {
       const start = sequenceTouch;
       sequenceTouch = null;
       if (!start?.direction || start.entering || !mobileSequence || event.touches.length) return;
